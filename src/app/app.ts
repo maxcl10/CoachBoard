@@ -114,7 +114,10 @@ export class App {
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        this.config.set(JSON.parse(String(reader.result)) as MatchConfig);
+        if (typeof reader.result !== 'string') {
+          throw new TypeError('Le contenu du fichier n’est pas du texte.');
+        }
+        this.config.set(JSON.parse(reader.result) as MatchConfig);
       } catch {
         window.alert('Le fichier JSON est invalide.');
       }
