@@ -504,6 +504,10 @@
         substitutes.innerHTML = "";
         (config.joueurs || [])
           .filter((p) => /^R\d+$/i.test((p.poste || "").trim()))
+          .sort(
+            (a, b) =>
+              Number(a.poste.slice(1)) - Number(b.poste.slice(1)),
+          )
           .forEach((p) => {
             const item = document.createElement("div");
             item.className = "substitute";
