@@ -162,8 +162,10 @@
       .pitch-wrap {
         min-height: 720px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 18px;
       }
       .pitch {
         width: min(100%, 880px);
@@ -193,6 +195,40 @@
           transparent 50.2%
         );
         pointer-events: none;
+      }
+      .substitutes {
+        width: min(100%, 880px);
+        border-top: 1px solid #e2e8f0;
+        padding-top: 15px;
+      }
+      .substitutes h2 {
+        margin-bottom: 10px;
+      }
+      .substitute-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .substitute {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 7px 10px;
+      }
+      .substitute .number {
+        width: 28px;
+        height: 28px;
+      }
+      .substitute-name {
+        font-size: 13px;
+        font-weight: 750;
+      }
+      .substitute-poste {
+        color: #64748b;
+        font-size: 11px;
       }
       .line {
         position: absolute;
@@ -317,7 +353,7 @@
     <div class="page">
       <div class="toolbar">
         <div>
-          <h1>⚽ Feuille d'avant-match</h1>
+          <h1>Feuille d'avant-match</h1>
           <small
             >Charge ton fichier config.json pour afficher automatiquement la
             composition.</small
@@ -355,8 +391,7 @@
 
       <div class="layout">
         <section class="panel">
-          <h2>👥 Joueurs</h2>
-          <div class="subtitle">Effectif sélectionné</div>
+          <h2>Joueurs</h2>          
           <div id="players"></div>
         </section>
 
@@ -367,6 +402,10 @@
             <div class="line box-right"></div>
             <div class="line goal-left"></div>
             <div class="line goal-right"></div>
+          </div>
+          <div class="substitutes">
+            <h2>Remplaçants</h2>
+            <div class="substitute-list" id="substitutes"></div>
           </div>
         </section>
       </div>
@@ -461,35 +500,53 @@
           players.appendChild(row);
         });
 
+        const substitutes = document.getElementById("substitutes");
+        substitutes.innerHTML = "";
+        (config.joueurs || [])
+          .filter((p) => /^R\d+$/i.test((p.poste || "").trim()))
+          .forEach((p) => {
+            const item = document.createElement("div");
+            item.className = "substitute";
+            item.innerHTML = `
+      <div class="number">${escapeHtml(p.numero)}</div>
+      <div>
+        <div class="substitute-name">${escapeHtml(p.nom)}</div>
+        <div class="substitute-poste">${escapeHtml(p.poste)}</div>
+      </div>`;
+            substitutes.appendChild(item);
+          });
+
         // Supprime uniquement les anciens joueurs du terrain
         document.querySelectorAll("#pitch .spot").forEach((e) => e.remove());
 
         const occupied = {};
-        (config.joueurs || []).forEach((p) => {
-          const key = (p.poste || "").toUpperCase();
-          let pos = positionMap[key];
+        (config.joueurs || [])
+          .filter((p) => !/^R\d+$/i.test((p.poste || "").trim()))
+          .forEach((p) => {
+            const key = (p.poste || "").toUpperCase();
+            let pos = positionMap[key];
 
-          // Si plusieurs joueurs ont le même poste, on les décale automatiquement
-          if (!pos) return;
-          const count = occupied[key] || 0;
-          occupied[key] = count + 1;
+            // Si plusieurs joueurs ont le même poste, on les décale automatiquement
+            if (!pos) return;
+            const count = occupied[key] || 0;
+            occupied[key] = count + 1;
 
-          let x = pos[0],
-            y = pos[1];
-          if (count > 0) {
-            const offset = count % 2 === 1 ? 9 : -9;
-            y = Math.max(8, Math.min(92, y + offset));
-          }
+            let x = pos[0],
+              y = pos[1];
+            if (count > 0) {
+              const offset = count % 2 === 1 ? 9 : -9;
+              y = Math.max(8, Math.min(92, y + offset));
+            }
 
-          const spot = document.createElement("div");
-          spot.className = "spot";
-          spot.style.left = x + "%";
-          spot.style.top = y + "%";
-          spot.innerHTML = `
+            const spot = document.createElement("div");
+            spot.className = "spot";
+            spot.style.left = x + "%";
+            spot.style.top = y + "%";
+            spot.innerHTML = `
       <div class="ball">${escapeHtml(p.numero)}</div>
       <div class="label">${escapeHtml(p.nom)}</div>`;
-          document.getElementById("pitch").appendChild(spot);
-        });
+            document.getElementById("pitch").appendChild(spot);
+          });
       }
 
       function escapeHtml(value) {
