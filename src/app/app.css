@@ -23,6 +23,18 @@
         gap: 15px;
         margin-bottom: 18px;
       }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .club-logo {
+        width: 52px;
+        height: 52px;
+        object-fit: contain;
+        border-radius: 8px;        
+        padding: 4px;
+      }
       .toolbar h1 {
         margin: 0;
         font-size: 22px;
