@@ -1,7 +1,7 @@
 <div class="page">
   <div class="toolbar">
     <div>
-      <h1>⚽ Feuille d'avant-match</h1>
+      <h1>Feuille d'avant-match</h1>
       <small>Charge ton fichier config.json pour afficher automatiquement la composition.</small>
     </div>
     <div class="actions">
@@ -13,23 +13,23 @@
 
   <section class="match-card">
     <div class="match-title">
-      <div class="team">{{ homeTeam }}</div>
+      <div class="team">{{ homeTeam() }}</div>
       <div class="vs">VS</div>
-      <div class="team">{{ awayTeam }}</div>
+      <div class="team">{{ awayTeam() }}</div>
     </div>
     <div class="meta">
-      <div class="meta-box"><span>TYPE DE MATCH</span><strong>{{ config.typeMatch || '—' }}</strong></div>
-      <div class="meta-box"><span>DATE</span><strong>{{ formatDate(config.date) }}</strong></div>
-      <div class="meta-box"><span>SYSTÈME</span><strong>{{ config.formation || '—' }}</strong></div>
+      <div class="meta-box"><span>TYPE DE MATCH</span><strong>{{ config().typeMatch || '—' }}</strong></div>
+      <div class="meta-box"><span>DATE</span><strong>{{ formatDate(config().date) }}</strong></div>
+      <div class="meta-box"><span>SYSTÈME</span><strong>{{ config().formation || '—' }}</strong></div>
     </div>
   </section>
 
   <div class="layout">
     <section class="panel">
-      <h2>👥 Joueurs</h2>
+      <h2>Joueurs</h2>
       <div class="subtitle">Effectif sélectionné</div>
       <div id="players">
-        @for (player of config.joueurs; track player.numero) {
+        @for (player of config().joueurs; track player.numero) {
           <div class="player">
             <div class="number">{{ player.numero }}</div>
             <div>
@@ -52,7 +52,7 @@
         <div class="line box-right"></div>
         <div class="line goal-left"></div>
         <div class="line goal-right"></div>
-        @for (player of starters; track player.numero; let index = $index) {
+        @for (player of starters(); track player.numero; let index = $index) {
           @if (positionFor(player, index); as position) {
             <div class="spot" [style.left]="position.left" [style.top]="position.top">
               <div class="ball">{{ player.numero }}</div>
@@ -63,9 +63,9 @@
       </div>
 
       <div class="substitutes">
-        <h2>🔄 Remplaçants</h2>
+        <h2>Remplaçants</h2>
         <div class="substitute-list">
-          @for (player of substitutes; track player.numero) {
+          @for (player of substitutes(); track player.numero) {
             <div class="substitute">
               <div class="number">{{ player.numero }}</div>
               <div>

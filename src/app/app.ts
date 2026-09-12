@@ -1,25 +1,11 @@
 import {
   Component,
   ViewEncapsulation,
+  computed,
+  signal,
 } from '@angular/core';
-
-interface Player {
-  numero: number;
-  nom: string;
-  poste: string;
-  capitaine?: boolean;
-}
-
-interface MatchConfig {
-  equipe: string;
-  adversaire: string;
-  lieu?: string;
-  domicile: boolean;
-  typeMatch: string;
-  date: string;
-  formation: string;
-  joueurs: Player[];
-}
+import { MatchConfig } from './models/match-config.model';
+import { Player } from './models/player.model';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +14,7 @@ interface MatchConfig {
   encapsulation: ViewEncapsulation.None,
 })
 export class App {
-  protected config: MatchConfig = {
+  protected readonly config = signal<MatchConfig>({
     equipe: 'EJPS 2 U14',
     adversaire: 'Alsasud',
     lieu: 'Stade Municipal',
@@ -52,7 +38,7 @@ export class App {
       { numero: 19, nom: 'Mathéo V.', poste: 'MCD' },
       { numero: 20, nom: 'Leo O.', poste: 'R1' },
     ],
-  };
+  });
 
   protected readonly positionMap: Record<string, [number, number]> = {
     GB: [7, 50],
@@ -74,27 +60,28 @@ export class App {
     ATT: [82, 50],
   };
 
-  protected get starters(): Player[] {
-    return this.config.joueurs.filter((player) => !this.isSubstitute(player));
-  }
+  protected readonly starters = computed(() =>
+    this.config().joueurs.filter((player) => !this.isSubstitute(player)),
+  );
 
-  protected get substitutes(): Player[] {
-    return this.config.joueurs
-      .filter((player) => this.isSubstitute(player))
+  protected readonly substitutes = computed(() =>
+    this.config()
+      .joueurs.filter((player) => this.isSubstitute(player))
       .sort(
         (a, b) =>
           Number(a.poste.slice(1)) - Number(b.poste.slice(1)),
-      );
-  }
+      ),
+  );
 
-  protected get homeTeam(): string {
-    return this.config.domicile ? this.config.equipe : this.config.adversaire;
-  }
+  protected readonly homeTeam = computed(() =>
+    this.config().domicile ? this.config().equipe : this.config().adversaire,
+  );
 
-  protected get awayTeam(): string {
-    return this.config.domicile ? this.config.adversaire : this.config.equipe;
-  }
+  protected readonly awayTeam = computed(() =>
+    this.config().domicile ? this.config().adversaire : this.config().equipe,
+  );
 
+  /** Formats an ISO date for display in French. */
   protected formatDate(value: string): string {
     if (!value) return '—';
     const date = new Date(value + (value.length === 10 ? 'T12:00:00' : ''));
@@ -107,6 +94,7 @@ export class App {
     });
   }
 
+  /** Returns the pitch coordinates for a starter, offsetting duplicate positions. */
   protected positionFor(player: Player, index: number): {
     left: string;
     top: string;
@@ -114,7 +102,7 @@ export class App {
     const position = this.positionMap[player.poste.toUpperCase()];
     if (!position) return null;
 
-    const previousPlayers = this.starters
+    const previousPlayers = this.starters()
       .slice(0, index)
       .filter((item) => item.poste.toUpperCase() === player.poste.toUpperCase())
       .length;
@@ -123,10 +111,12 @@ export class App {
     return { left: `${position[0]}%`, top: `${top}%` };
   }
 
+  /** Identifies substitute positions such as R1, R2, and R3. */
   protected isSubstitute(player: Player): boolean {
     return /^R\d+$/i.test((player.poste || '').trim());
   }
 
+  /** Reads and applies a match configuration selected by the user. */
   protected onConfigFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -135,7 +125,7 @@ export class App {
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        this.config = JSON.parse(String(reader.result)) as MatchConfig;
+        this.config.set(JSON.parse(String(reader.result)) as MatchConfig);
       } catch {
         window.alert('Le fichier JSON est invalide.');
       }
@@ -144,6 +134,7 @@ export class App {
     reader.readAsText(file, 'UTF-8');
   }
 
+  /** Opens the browser print dialog for the match sheet. */
   protected printPage(): void {
     window.print();
   }
