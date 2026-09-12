@@ -1,12 +1,17 @@
 import { Component, ViewEncapsulation, computed, signal } from '@angular/core';
+import { DatePipe, registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
 import { MatchConfig } from './models/match-config.model';
 import { Player } from './models/player.model';
+
+registerLocaleData(localeFr, 'fr-FR');
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.css',
   encapsulation: ViewEncapsulation.None,
+  imports: [DatePipe],
 })
 export class App {
   protected readonly config = signal<MatchConfig>({
@@ -72,19 +77,6 @@ export class App {
   protected readonly awayTeam = computed(() =>
     this.config().domicile ? this.config().adversaire : this.config().equipe,
   );
-
-  /** Formats an ISO date for display in French. */
-  protected formatDate(value: string): string {
-    if (!value) return '—';
-    const date = new Date(value + (value.length === 10 ? 'T12:00:00' : ''));
-    if (Number.isNaN(date.getTime())) return value;
-    return date.toLocaleDateString('fr-FR', {
-      weekday: 'long',
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
-    });
-  }
 
   /** Returns the pitch coordinates for a starter, offsetting duplicate positions. */
   protected positionFor(

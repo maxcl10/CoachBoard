@@ -19,7 +19,7 @@
     </div>
     <div class="meta">
       <div class="meta-box"><span>Type de match</span><strong>{{ config().typeMatch || '—' }}</strong></div>
-      <div class="meta-box"><span>Date</span><strong>{{ formatDate(config().date) }}</strong></div>
+      <div class="meta-box"><span>Date</span><strong>{{ config().date ? (config().date | date:'EEEE dd MMMM yyyy':'':'fr-FR') : '—' }}</strong></div>
       <div class="meta-box"><span>Système</span><strong>{{ config().formation || '—' }}</strong></div>
     </div>
   </section>
