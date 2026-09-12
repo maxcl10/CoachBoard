@@ -158,6 +158,17 @@
         font-size: 11px;
         margin-top: 2px;
       }
+      .captain-badge {
+        display: inline-block;
+        margin-left: 6px;
+        padding: 2px 6px;
+        border-radius: 999px;
+        background: #f59e0b;
+        color: white;
+        font-size: 10px;
+        font-weight: 800;
+        vertical-align: 2px;
+      }
 
       .pitch-wrap {
         min-height: 720px;
@@ -433,7 +444,7 @@
           { numero: 11, nom: "Matteo S.", poste: "AC" },
           { numero: 12, nom: "Djelle G.", poste: "R2" },
           { numero: 18, nom: "Samuel H.", poste: "DCG" },
-          { numero: 19, nom: "Mathéo V.", poste: "MCD" },
+          { numero: 19, nom: "Mathéo V.", poste: "MCD", capitaine: true },
           { numero: 20, nom: "Leo O.", poste: "R1" },
         ],
       };
@@ -495,7 +506,10 @@
           row.innerHTML = `
       <div class="number">${escapeHtml(p.numero)}</div>
       <div>
-        <div class="player-name">${escapeHtml(p.nom)}</div>        
+        <div class="player-name">
+          ${escapeHtml(p.nom)}
+          ${p.capitaine ? '<span class="captain-badge">C</span>' : ""}
+        </div>
       </div>`;
           players.appendChild(row);
         });
@@ -504,6 +518,7 @@
         substitutes.innerHTML = "";
         (config.joueurs || [])
           .filter((p) => /^R\d+$/i.test((p.poste || "").trim()))
+
           .sort(
             (a, b) =>
               Number(a.poste.slice(1)) - Number(b.poste.slice(1)),

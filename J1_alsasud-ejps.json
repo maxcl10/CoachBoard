@@ -19,7 +19,7 @@
     { "numero": 11, "nom": "Matteo S.", "poste": "AC" },
     { "numero": 12, "nom": "Djelle G.", "poste": "R2" },
     { "numero": 18, "nom": "Samuel H.", "poste": "DCG" },
-    { "numero": 19, "nom": "Mathéo V.", "poste": "MCD" },
+    { "numero": 19, "nom": "Mathéo V.", "poste": "MCD", "capitaine": true },
     { "numero": 20, "nom": "Leo O.", "poste": "R1" }
   ]
 }
