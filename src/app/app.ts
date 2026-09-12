@@ -1,9 +1,4 @@
-import {
-  Component,
-  ViewEncapsulation,
-  computed,
-  signal,
-} from '@angular/core';
+import { Component, ViewEncapsulation, computed, signal } from '@angular/core';
 import { MatchConfig } from './models/match-config.model';
 import { Player } from './models/player.model';
 
@@ -35,7 +30,7 @@ export class App {
       { numero: 11, nom: 'Matteo S.', poste: 'AC' },
       { numero: 12, nom: 'Djelle G.', poste: 'R2' },
       { numero: 18, nom: 'Samuel H.', poste: 'DCG' },
-      { numero: 19, nom: 'Mathéo V.', poste: 'MCD' },
+      { numero: 19, nom: 'Mathéo V.', poste: 'MCD', capitaine: true },
       { numero: 20, nom: 'Leo O.', poste: 'R1' },
     ],
   });
@@ -67,10 +62,7 @@ export class App {
   protected readonly substitutes = computed(() =>
     this.config()
       .joueurs.filter((player) => this.isSubstitute(player))
-      .sort(
-        (a, b) =>
-          Number(a.poste.slice(1)) - Number(b.poste.slice(1)),
-      ),
+      .sort((a, b) => Number(a.poste.slice(1)) - Number(b.poste.slice(1))),
   );
 
   protected readonly homeTeam = computed(() =>
@@ -95,7 +87,10 @@ export class App {
   }
 
   /** Returns the pitch coordinates for a starter, offsetting duplicate positions. */
-  protected positionFor(player: Player, index: number): {
+  protected positionFor(
+    player: Player,
+    index: number,
+  ): {
     left: string;
     top: string;
   } | null {
@@ -104,8 +99,7 @@ export class App {
 
     const previousPlayers = this.starters()
       .slice(0, index)
-      .filter((item) => item.poste.toUpperCase() === player.poste.toUpperCase())
-      .length;
+      .filter((item) => item.poste.toUpperCase() === player.poste.toUpperCase()).length;
     const offset = previousPlayers === 0 ? 0 : previousPlayers % 2 === 1 ? 9 : -9;
     const top = Math.max(8, Math.min(92, position[1] + offset));
     return { left: `${position[0]}%`, top: `${top}%` };

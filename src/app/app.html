@@ -18,16 +18,15 @@
       <div class="team">{{ awayTeam() }}</div>
     </div>
     <div class="meta">
-      <div class="meta-box"><span>TYPE DE MATCH</span><strong>{{ config().typeMatch || '—' }}</strong></div>
-      <div class="meta-box"><span>DATE</span><strong>{{ formatDate(config().date) }}</strong></div>
-      <div class="meta-box"><span>SYSTÈME</span><strong>{{ config().formation || '—' }}</strong></div>
+      <div class="meta-box"><span>Type de match</span><strong>{{ config().typeMatch || '—' }}</strong></div>
+      <div class="meta-box"><span>Date</span><strong>{{ formatDate(config().date) }}</strong></div>
+      <div class="meta-box"><span>Système</span><strong>{{ config().formation || '—' }}</strong></div>
     </div>
   </section>
 
   <div class="layout">
     <section class="panel">
-      <h2>Joueurs</h2>
-      <div class="subtitle">Effectif sélectionné</div>
+      <h2>Joueurs</h2>      
       <div id="players">
         @for (player of config().joueurs; track player.numero) {
           <div class="player">
@@ -36,7 +35,7 @@
               <div class="player-name">
                 {{ player.nom }}
                 @if (player.capitaine) {
-                  <span class="captain-badge">CAPITAINE</span>
+                  <span class="captain-badge">C</span>
                 }
               </div>
             </div>
