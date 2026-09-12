@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feuille d'avant-match U14</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Inter, Arial, sans-serif;
+    background: #eef2f7;
+    color: #172033;
+  }
+  .page {
+    max-width: 1450px;
+    margin: 24px auto;
+    padding: 0 18px 30px;
+  }
+  .toolbar {
+    background: #172033;
+    color: white;
+    border-radius: 18px;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
+  }
+  .toolbar h1 { margin: 0; font-size: 22px; }
+  .toolbar small { color: #b8c5dc; }
+  .actions { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  input[type=file] { display:none; }
+  .btn {
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #2563eb;
+    color: white;
+  }
+  .btn.secondary { background:#334155; }
+  .btn:hover { filter: brightness(1.08); }
+
+  .match-card {
+    background:white;
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: 0 8px 30px rgba(15,23,42,.07);
+    margin-bottom: 18px;
+  }
+  .match-title {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 25px;
+    margin-bottom: 18px;
+  }
+  .team {
+    font-size: 28px;
+    font-weight: 900;
+  }
+  .vs {
+    font-size: 14px;
+    color:#64748b;
+    font-weight:800;
+  }
+  .meta {
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:12px;
+  }
+  .meta-box {
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:12px;
+    padding:12px 15px;
+  }
+  .meta-box span {
+    display:block;
+    color:#64748b;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.08em;
+    margin-bottom:4px;
+  }
+  .meta-box strong { font-size:17px; }
+
+  .layout {
+    display:grid;
+    grid-template-columns: 300px 1fr;
+    gap:18px;
+  }
+  .panel {
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    box-shadow: 0 8px 30px rgba(15,23,42,.07);
+  }
+  .panel h2 {
+    margin:0 0 4px;
+    font-size:20px;
+  }
+  .subtitle { color:#64748b; font-size:13px; margin-bottom:15px; }
+
+  .player {
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:9px 7px;
+    border-bottom:1px solid #edf1f5;
+  }
+  .number {
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:#2563eb;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:900;
+    flex:none;
+  }
+  .player-name { font-weight:750; font-size:14px; }
+  .player-poste { color:#64748b; font-size:11px; margin-top:2px; }
+
+  .pitch-wrap {
+    min-height:720px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .pitch {
+    width:min(100%, 880px);
+    aspect-ratio: 1.65 / 1;
+    position:relative;
+    border-radius:18px;
+    overflow:hidden;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        #238044 0,
+        #238044 9.09%,
+        #2a8c4c 9.09%,
+        #2a8c4c 18.18%
+      );
+    border:5px solid white;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,.55);
+  }
+  .pitch::before {
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(90deg, transparent 49.8%, rgba(255,255,255,.9) 49.8%, rgba(255,255,255,.9) 50.2%, transparent 50.2%);
+    pointer-events:none;
+  }
+  .line { position:absolute; border:2px solid rgba(255,255,255,.9); pointer-events:none; }
+  .center-circle {
+    width:20%;
+    aspect-ratio:1;
+    border-radius:50%;
+    left:40%;
+    top:50%;
+    transform:translateY(-50%);
+  }
+  .box-left { left:-1px; top:25%; width:16%; height:50%; }
+  .box-right { right:-1px; top:25%; width:16%; height:50%; }
+  .goal-left { left:-5px; top:39%; width:5%; height:22%; border-left:0; }
+  .goal-right { right:-5px; top:39%; width:5%; height:22%; border-right:0; }
+
+  .spot {
+    position:absolute;
+    transform:translate(-50%,-50%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    z-index:3;
+  }
+  .ball {
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:#172033;
+    border:3px solid white;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    font-size:13px;
+    box-shadow:0 4px 10px rgba(0,0,0,.2);
+  }
+  .label {
+    margin-top:5px;
+    padding:4px 7px;
+    border-radius:6px;
+    background:white;
+    color:#172033;
+    font-weight:800;
+    font-size:11px;
+    white-space:nowrap;
+    box-shadow:0 2px 5px rgba(0,0,0,.12);
+  }
+
+  .empty {
+    padding:30px;
+    text-align:center;
+    color:#64748b;
+  }
+
+  @media(max-width:900px) {
+    .layout { grid-template-columns:1fr; }
+    .pitch-wrap { min-height:auto; padding:5px; }
+    .meta { grid-template-columns:1fr; }
+    .toolbar { align-items:flex-start; flex-direction:column; }
+  }
+
+  @media print {
+    body { background:white; }
+    .toolbar { display:none; }
+    .page { max-width:none; margin:0; padding:0; }
+    .match-card, .panel { box-shadow:none; }
+    .layout { grid-template-columns:260px 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="toolbar">
+    <div>
+      <h1>⚽ Feuille d'avant-match</h1>
+      <small>Charge ton fichier config.json pour afficher automatiquement la composition.</small>
+    </div>
+    <div class="actions">
+      <label class="btn" for="configFile">📂 Charger la configuration</label>
+      <button class="btn secondary" onclick="window.print()">🖨️ Imprimer</button>
+      <input id="configFile" type="file" accept=".json,application/json">
+    </div>
+  </div>
+
+  <section class="match-card">
+    <div class="match-title">
+      <div class="team" id="team1">-</div>
+      <div class="vs">VS</div>
+      <div class="team" id="team2">—</div>
+    </div>
+    <div class="meta">
+      <div class="meta-box"><span>TYPE DE MATCH</span><strong id="matchType">—</strong></div>
+      <div class="meta-box"><span>DATE</span><strong id="matchDate">—</strong></div>
+      <div class="meta-box"><span>SYSTÈME</span><strong id="formation">—</strong></div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <section class="panel">
+      <h2>👥 Joueurs</h2>
+      <div class="subtitle">Effectif sélectionné</div>
+      <div id="players"></div>
+    </section>
+
+    <section class="panel pitch-wrap">
+      <div class="pitch" id="pitch">
+        <div class="line center-circle"></div>
+        <div class="line box-left"></div>
+        <div class="line box-right"></div>
+        <div class="line goal-left"></div>
+        <div class="line goal-right"></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+const defaultConfig = {
+  "equipe": "EJPS 2 U14",
+  "adversaire": "Alsasud",
+  "lieu": "Stade Municipal",
+  "domicile": false,  
+  "typeMatch": "Championnat J1",
+  "date": "2026-09-12",
+  "formation": "4-3-3",
+  "joueurs": [
+    {"numero": 1, "nom": "Benjamin M.", "poste": "GB"},
+    {"numero": 2, "nom": "Daniel T.", "poste": "DG"},
+    {"numero": 3, "nom": "Alexandre B.", "poste": "DD"},
+    {"numero": 4, "nom": "Simeon H.", "poste": "DCD"},
+    {"numero": 6, "nom": "Louën F.", "poste": "MDC"},
+    {"numero": 7, "nom": "Matthew M.", "poste": "AD"},
+    {"numero": 8, "nom": "Hugo K.", "poste": "MCG"},
+    {"numero": 9, "nom": "Cays L.", "poste": "R3"},
+    {"numero": 10, "nom": "Yamin G.", "poste": "AG"},
+    {"numero": 11, "nom": "Matteo S.", "poste": "AC"},
+    {"numero": 12, "nom": "Djelle G.", "poste": "R2"},
+    {"numero": 18, "nom": "Samuel H.", "poste": "DCG"},
+    {"numero": 19, "nom": "Mathéo V.", "poste": "MCD"},
+    {"numero": 20, "nom": "Leo O.", "poste": "R1"}
+  ]
+}
+
+const positionMap = {
+  "GB": [7, 50],
+  "GK": [7, 50],
+
+  "DG": [30, 12],
+  "DCG": [25, 40],
+  "DC": [25, 50],
+  "DCD": [25, 60],
+  "DD": [30, 87],
+
+  "MDC": [45, 50],
+  "MCG": [55, 30],
+  "MC": [48, 50],
+  "MCD": [55, 70],
+  "MOC": [62, 50],
+
+  "AG": [70, 12],
+  "BU": [82, 50],
+  "AC": [82, 50],
+  "AD": [70, 87],
+  "ATT": [82, 50]
+};
+
+function formatDate(value) {
+  if (!value) return "—";
+  const d = new Date(value + (value.length === 10 ? "T12:00:00" : ""));
+  if (isNaN(d)) return value;
+  return d.toLocaleDateString("fr-FR", {
+    weekday:"long", day:"2-digit", month:"long", year:"numeric"
+  });
+}
+
+function loadConfig(config) {
+  document.getElementById("team1").textContent = (config.domicile ? config.equipe : config.adversaire) || "—";
+  document.getElementById("team2").textContent = (config.domicile ? config.adversaire : config.equipe) || "—";
+  document.getElementById("matchType").textContent = config.typeMatch || "—";
+  document.getElementById("matchDate").textContent = formatDate(config.date);
+  document.getElementById("formation").textContent = config.formation || "—";
+
+  const players = document.getElementById("players");
+  players.innerHTML = "";
+
+  (config.joueurs || []).forEach(p => {
+    const row = document.createElement("div");
+    row.className = "player";
+    row.innerHTML = `
+      <div class="number">${escapeHtml(p.numero)}</div>
+      <div>
+        <div class="player-name">${escapeHtml(p.nom)}</div>        
+      </div>`;
+    players.appendChild(row);
+  });
+
+  // Supprime uniquement les anciens joueurs du terrain
+  document.querySelectorAll("#pitch .spot").forEach(e => e.remove());
+
+  const occupied = {};
+  (config.joueurs || []).forEach(p => {
+    const key = (p.poste || "").toUpperCase();
+    let pos = positionMap[key];
+
+    // Si plusieurs joueurs ont le même poste, on les décale automatiquement
+    if (!pos) return;
+    const count = occupied[key] || 0;
+    occupied[key] = count + 1;
+
+    let x = pos[0], y = pos[1];
+    if (count > 0) {
+      const offset = count % 2 === 1 ? 9 : -9;
+      y = Math.max(8, Math.min(92, y + offset));
+    }
+
+    const spot = document.createElement("div");
+    spot.className = "spot";
+    spot.style.left = x + "%";
+    spot.style.top = y + "%";
+    spot.innerHTML = `
+      <div class="ball">${escapeHtml(p.numero)}</div>
+      <div class="label">${escapeHtml(p.nom)}</div>`;
+    document.getElementById("pitch").appendChild(spot);
+  });
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
+  }[c]));
+}
+
+document.getElementById("configFile").addEventListener("change", event => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      loadConfig(JSON.parse(e.target.result));
+    } catch(err) {
+      alert("Le fichier JSON est invalide.");
+    }
+  };
+  reader.readAsText(file, "UTF-8");
+});
+
+loadConfig(defaultConfig);
+</script>
+</body>
+</html>
