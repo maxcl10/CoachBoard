@@ -1,0 +1,81 @@
+<div class="page">
+  <div class="toolbar">
+    <div>
+      <h1>⚽ Feuille d'avant-match</h1>
+      <small>Charge ton fichier config.json pour afficher automatiquement la composition.</small>
+    </div>
+    <div class="actions">
+      <label class="btn" for="configFile">📂 Charger la configuration</label>
+      <button class="btn secondary" type="button" (click)="printPage()">🖨️ Imprimer</button>
+      <input id="configFile" type="file" accept=".json,application/json" (change)="onConfigFileChange($event)" />
+    </div>
+  </div>
+
+  <section class="match-card">
+    <div class="match-title">
+      <div class="team">{{ homeTeam }}</div>
+      <div class="vs">VS</div>
+      <div class="team">{{ awayTeam }}</div>
+    </div>
+    <div class="meta">
+      <div class="meta-box"><span>TYPE DE MATCH</span><strong>{{ config.typeMatch || '—' }}</strong></div>
+      <div class="meta-box"><span>DATE</span><strong>{{ formatDate(config.date) }}</strong></div>
+      <div class="meta-box"><span>SYSTÈME</span><strong>{{ config.formation || '—' }}</strong></div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <section class="panel">
+      <h2>👥 Joueurs</h2>
+      <div class="subtitle">Effectif sélectionné</div>
+      <div id="players">
+        @for (player of config.joueurs; track player.numero) {
+          <div class="player">
+            <div class="number">{{ player.numero }}</div>
+            <div>
+              <div class="player-name">
+                {{ player.nom }}
+                @if (player.capitaine) {
+                  <span class="captain-badge">CAPITAINE</span>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="panel pitch-wrap">
+      <div class="pitch" id="pitch">
+        <div class="line center-circle"></div>
+        <div class="line box-left"></div>
+        <div class="line box-right"></div>
+        <div class="line goal-left"></div>
+        <div class="line goal-right"></div>
+        @for (player of starters; track player.numero; let index = $index) {
+          @if (positionFor(player, index); as position) {
+            <div class="spot" [style.left]="position.left" [style.top]="position.top">
+              <div class="ball">{{ player.numero }}</div>
+              <div class="label">{{ player.nom }}</div>
+            </div>
+          }
+        }
+      </div>
+
+      <div class="substitutes">
+        <h2>🔄 Remplaçants</h2>
+        <div class="substitute-list">
+          @for (player of substitutes; track player.numero) {
+            <div class="substitute">
+              <div class="number">{{ player.numero }}</div>
+              <div>
+                <div class="substitute-name">{{ player.nom }}</div>
+                <div class="substitute-poste">{{ player.poste }}</div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
