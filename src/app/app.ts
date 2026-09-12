@@ -92,7 +92,10 @@ export class App {
     const previousPlayers = this.starters()
       .slice(0, index)
       .filter((item) => item.poste.toUpperCase() === player.poste.toUpperCase()).length;
-    const offset = previousPlayers === 0 ? 0 : previousPlayers % 2 === 1 ? 9 : -9;
+    let offset = 0;
+    if (previousPlayers > 0) {
+      offset = previousPlayers % 2 === 1 ? 9 : -9;
+    }
     const top = Math.max(8, Math.min(92, position[1] + offset));
     return { left: `${position[0]}%`, top: `${top}%` };
   }
