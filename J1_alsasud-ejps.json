@@ -2,7 +2,7 @@
   "equipe": "EJPS 2 U14",
   "adversaire": "Alsasud",
   "lieu": "Stade Municipal",
-  "domicile": true,  
+  "domicile": false,  
   "typeMatch": "Championnat J1",
   "date": "2026-09-12",
   "formation": "4-3-3",
