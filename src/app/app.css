@@ -200,23 +200,16 @@
         border: 5px solid white;
         box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.55);
       }
-      .pitch::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          90deg,
-          transparent 49.8%,
-          rgba(255, 255, 255, 0.9) 49.8%,
-          rgba(255, 255, 255, 0.9) 50.2%,
-          transparent 50.2%
-        );
-        pointer-events: none;
+      .halfway-line {
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 0;
       }
       .substitutes {
         width: min(100%, 880px);
         border-top: 1px solid #e2e8f0;
-        padding-top: 15px;
+        padding: 15px;
       }
       .substitutes h2 {
         margin-bottom: 10px;
@@ -251,6 +244,12 @@
         position: absolute;
         border: 2px solid rgba(255, 255, 255, 0.9);
         pointer-events: none;
+      }
+      .halfway-line {
+        border-top: 0;
+        border-right: 0;
+        border-bottom: 0;
+        transform: translateX(-50%);
       }
       .center-circle {
         width: 20%;
@@ -327,7 +326,7 @@
         color: #64748b;
       }
 
-      @media (max-width: 900px) {
+      @media screen and (max-width: 900px) {
         .layout {
           grid-template-columns: 1fr;
         }
@@ -344,23 +343,119 @@
         }
       }
 
+      @page {
+        size: landscape;
+        margin: 8mm;
+      }
+
       @media print {
+        html,
         body {
+          height: 100%;
           background: white;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
         .toolbar {
           display: none;
         }
         .page {
           max-width: none;
+          width: 100%;
+          height: 100%;
           margin: 0;
           padding: 0;
+          display: flex;
+          flex-direction: column;
         }
         .match-card,
         .panel {
           box-shadow: none;
+          border: 1px solid #e2e8f0;
+        }
+        .match-card {
+          padding: 10px 16px;
+          margin-bottom: 8px;
+        }
+        .match-title {
+          margin-bottom: 8px;
+        }
+        .meta {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .team {
+          font-size: 20px;
+        }
+        .meta-box {
+          padding: 6px 10px;
+        }
+        .meta-box strong {
+          font-size: 14px;
         }
         .layout {
-          grid-template-columns: 260px 1fr;
+          flex: 1;
+          grid-template-columns: 220px 1fr;
+          gap: 10px;
+          min-height: 0;
+        }
+        .panel {
+          padding: 10px 14px;
+          overflow: hidden;
+        }
+        .panel h2 {
+          font-size: 15px;
+          margin: 0 0 4px;
+        }
+        .player {
+          padding: 4px 5px;
+          gap: 8px;
+        }
+        .number {
+          width: 24px;
+          height: 24px;
+          font-size: 10px;
+        }
+        .player-name {
+          font-size: 12px;
+        }
+        .pitch-wrap {
+          min-height: 0;
+          height: 100%;
+          padding: 0;
+          gap: 8px;
+        }
+        .pitch {
+          width: min(100%, 100%);
+          max-height: 100%;
+          flex: 1;
+        }
+        .substitutes {
+          padding: 6px 10px;
+        }
+        .substitutes h2 {
+          font-size: 15px;
+          margin-bottom: 6px;
+        }
+        .substitute {
+          padding: 4px 8px;
+        }
+        .substitute .number {
+          width: 22px;
+          height: 22px;
+        }
+        .ball {
+          width: 34px;
+          height: 34px;
+          font-size: 11px;
+          border-width: 2px;
+        }
+        .label {
+          margin-top: 3px;
+          padding: 2px 5px;
+          font-size: 9px;
+        }
+        .match-card,
+        .layout {
+          page-break-inside: avoid;
         }
       }
