@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="actions">
-      <label class="btn" for="configFile">📂 Charger la configuration</label>
+      <label class="btn" for="configFile">Charger la configuration</label>
       <button class="btn secondary" type="button" (click)="printPage()">🖨️ Imprimer</button>
       <a class="btn secondary" href="guide-utilisation.html" target="_blank" rel="noopener">📖 Guide d'utilisation</a>
       <input id="configFile" type="file" accept=".json,application/json" (change)="onConfigFileChange($event)" />
@@ -23,7 +23,7 @@
     </div>
     <div class="meta">
       <div class="meta-box"><span>Type de match</span><strong>{{ config().typeMatch || '—' }}</strong></div>
-      <div class="meta-box"><span>Date</span><strong>{{ config().date ? (config().date | date:'EEEE dd MMMM yyyy':'':'fr-FR') : '—' }}</strong></div>
+      <div class="meta-box"><span>Date</span><strong>{{ config().date ? (((config().date! | date:'EEEE':'':'fr-FR' | titlecase) ?? '') + (config().date! | date:' dd MMMM yyyy':'':'fr-FR')) : '—' }}</strong></div>
       <div class="meta-box"><span>Système</span><strong>{{ config().formation || '—' }}</strong></div>
     </div>
   </section>

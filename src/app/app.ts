@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation, computed, signal } from '@angular/core';
-import { DatePipe, registerLocaleData } from '@angular/common';
+import { DatePipe, TitleCasePipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { MatchConfig } from './models/match-config.model';
 import { Player } from './models/player.model';
@@ -11,7 +11,7 @@ registerLocaleData(localeFr, 'fr-FR');
   templateUrl: './app.html',
   styleUrl: './app.css',
   encapsulation: ViewEncapsulation.None,
-  imports: [DatePipe],
+  imports: [DatePipe, TitleCasePipe],
 })
 export class App {
   protected readonly config = signal<MatchConfig>({
