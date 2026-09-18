@@ -17,9 +17,9 @@ export class App {
   protected readonly config = signal<MatchConfig>({
     equipe: 'EJPS 2 U14 (1er)',
     adversaire: 'Saint-Louis Neuweg (2e)',
-    lieu: 'Stade Municipal',
+    lieu: 'Stade de l\'Au',
     domicile: false,
-    typeMatch: 'Championnat J2',
+    typeMatch: 'Championnat U14 D1  J2',
     date: '2026-09-19',
     formation: '4-3-3',
     joueurs: [
