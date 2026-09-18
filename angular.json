@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "avant-match": {
+    "coach-board": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:class": {
@@ -81,10 +81,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "avant-match:build:production"
+              "buildTarget": "coach-board:build:production"
             },
             "development": {
-              "buildTarget": "avant-match:build:development"
+              "buildTarget": "coach-board:build:development"
             }
           },
           "defaultConfiguration": "development"
