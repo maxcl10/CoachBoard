@@ -29,19 +29,19 @@
       </div>
       <div class="row row-cols-1 row-cols-md-3 g-3 text-start">
         <div class="col">
-          <div class="border rounded-3 p-3 bg-body-tertiary h-100">
+          <div class="border rounded-3 p-2 bg-body-tertiary h-100">
             <span class="d-block text-uppercase text-secondary small fw-bold mb-1">Type de match</span>
             <strong class="fs-6">{{ config().matchType || '—' }}</strong>
           </div>
         </div>
         <div class="col">
-          <div class="border rounded-3 p-3 bg-body-tertiary h-100">
+          <div class="border rounded-3 p-2 bg-body-tertiary h-100">
             <span class="d-block text-uppercase text-secondary small fw-bold mb-1">Date</span>
             <strong class="fs-6">{{ config().date ? (((config().date! | date:'EEEE':'':'fr-FR' | titlecase) ?? '') + (config().date! | date:' dd MMMM yyyy':'':'fr-FR')) : '—' }}</strong>
           </div>
         </div>
         <div class="col">
-          <div class="border rounded-3 p-3 bg-body-tertiary h-100">
+          <div class="border rounded-3 p-2 bg-body-tertiary h-100">
             <span class="d-block text-uppercase text-secondary small fw-bold mb-1">Système</span>
             <strong class="fs-6">{{ config().formation || '—' }}</strong>
           </div>
