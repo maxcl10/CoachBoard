@@ -161,28 +161,116 @@
 }
 
 @media print {
+  .container-xxl {
+    width: 100% !important;
+    max-width: none !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .match-card {
+    margin-bottom: 0.5rem !important;
+    box-shadow: none !important;
+  }
+
+  .match-card .card-body {
+    padding: 0.5rem !important;
+  }
+
+  .match-card .fs-3 {
+    font-size: 1.25rem !important;
+  }
+
+  .match-card .mb-3 {
+    margin-bottom: 0.5rem !important;
+  }
+
+  .match-card .row {
+    --bs-gutter-x: 0.5rem;
+    --bs-gutter-y: 0.5rem;
+  }
+
+  .match-card .col {
+    flex: 0 0 auto;
+    width: 33.33333333%;
+  }
+
+  .match-card .p-3 {
+    padding: 0.4rem !important;
+  }
+
+  .layout {
+    display: grid !important;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 0.5rem !important;
+    height: calc(100vh - 105px) !important;
+    margin: 0 !important;
+    align-items: stretch;
+    overflow: visible !important;
+  }
+
+  .layout > section {
+    width: auto !important;
+    min-width: 0;
+    padding: 0 !important;
+  }
+
+  .layout > section > .card {
+    height: 100% !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+  }
+
+  .layout > section > .card > .card-body {
+    padding: 0.5rem !important;
+  }
+
+  .layout .list-group-item {
+    padding-top: 0.2rem !important;
+    padding-bottom: 0.2rem !important;
+  }
+
   .shirt-number-input {
-    width: 24px;
-    height: 24px;
+    width: 28px !important;
+    height: 28px;
+    padding: 0;
     border: 0;
     border-radius: 50%;
-    padding: 0;
-    background: #172033;
-    color: white;
-    font-size: 10px;
-    font-weight: 900;
-    appearance: none;
-    -moz-appearance: textfield;
+    background: var(--bs-primary);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 28px;
+    flex: none;
+    appearance: textfield;
   }
+
   .shirt-number-input::-webkit-inner-spin-button,
   .shirt-number-input::-webkit-outer-spin-button {
     margin: 0;
     appearance: none;
   }
   .pitch {
-    width: 100%;
-    max-height: 100%;
-    flex: 1;
+    width: calc(100% - 4rem);
+    margin-inline: 2rem;
+    flex: none;
+    max-height: calc(100% - 55px);
+  }
+
+  .layout > section:last-child .card-body {
+    gap: 0.5rem !important;
+    overflow: visible !important;
+  }
+
+  .layout > section:last-child .w-100 {
+    flex: 0 0 auto;
+    padding-inline: 2rem;
+  }
+
+  .layout > section:last-child h2 {
+    margin-bottom: 0.25rem !important;
   }
   .ball {
     width: 34px;
@@ -195,9 +283,12 @@
     padding: 2px 5px;
     font-size: 9px;
   }
-  .match-card,
+  .match-card {
+    break-after: avoid;
+  }
+
   .layout {
+    break-before: avoid;
     break-inside: avoid;
   }
 }
-

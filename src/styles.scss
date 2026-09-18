@@ -2,15 +2,22 @@
 
 @page {
   size: landscape;
-  margin: 8mm;
+  margin: 5mm;
 }
 
 @media print {
   html,
   body {
     height: 100%;
-    background: #fff;
+    background: #fff !important;
+    overflow: hidden;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  body.bg-body-secondary,
+  .bg-body-tertiary,
+  .card {
+    background-color: #fff !important;
   }
 }
