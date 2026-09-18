@@ -1,6 +1,8 @@
 export interface Player {
+  playerId: number;
   numero: number;
-  nom: string;
   poste: string;
   capitaine?: boolean;
+  /** Legacy field accepted only while importing old configuration files. */
+  nom?: string;
 }

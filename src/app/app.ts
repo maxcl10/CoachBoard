@@ -22,7 +22,7 @@ export class App {
     stream: () => this.playersService.getPlayers(),
   });
   protected readonly selectedPlayerId = signal<number | null>(null);
-  protected readonly draggingPlayerNumero = signal<number | null>(null);
+  protected readonly draggingPlayerId = signal<number | null>(null);
 
   protected readonly config = signal<MatchConfig>({
     equipe: 'EJPS 2 U14 (1er)',
@@ -33,20 +33,20 @@ export class App {
     date: '2026-09-19',
     formation: '4-3-3',
     joueurs: [
-      { numero: 1, nom: 'Benjamin Medete', poste: 'GB' },
-      { numero: 5, nom: 'Matthew Molloy', poste: 'DG' },
-      { numero: 2, nom: 'Samuel Hari', poste: 'DCG' },
-      { numero: 4, nom: 'Siméon Hari', poste: 'DCD' },
-      { numero: 3, nom: 'Alexandre Bihl', poste: 'DD' },
-      { numero: 6, nom: 'Louën Fluhr', poste: 'MDC' },
-      { numero: 8, nom: 'Hugo Kauffmann', poste: 'MCG', capitaine: true },
-      { numero: 19, nom: 'Leo Ouk', poste: 'MCD' },
-      { numero: 10, nom: 'Yamin Gasser', poste: 'AG' },
-      { numero: 18, nom: 'Djelle Gashi', poste: 'AD' },
-      { numero: 11, nom: 'Matteo Skatar', poste: 'AC' },
-      { numero: 20, nom: 'Daniel T.', poste: 'R1' },
-      { numero: 12, nom: 'Elie Kalenga Kapiamba', poste: 'R2' },
-      { numero: 9, nom: 'Cays Letourneau', poste: 'R3' },
+      { playerId: 28, numero: 1, poste: 'GB' },
+      { playerId: 13, numero: 5, poste: 'DG' },
+      { playerId: 8, numero: 2, poste: 'DCG' },
+      { playerId: 9, numero: 4, poste: 'DCD' },
+      { playerId: 3, numero: 3, poste: 'DD' },
+      { playerId: 5, numero: 6, poste: 'MDC' },
+      { playerId: 34, numero: 8, poste: 'MCG', capitaine: true },
+      { playerId: 17, numero: 19, poste: 'MCD' },
+      { playerId: 19, numero: 10, poste: 'AG' },
+      { playerId: 27, numero: 18, poste: 'AD' },
+      { playerId: 15, numero: 11, poste: 'AC' },
+      { playerId: 11, numero: 20, poste: 'R1' },
+      { playerId: 29, numero: 12, poste: 'R2' },
+      { playerId: 30, numero: 9, poste: 'R3' },
     ],
   });
 
@@ -84,7 +84,7 @@ export class App {
     () => this.config().joueurs.length < this.maxPlayers,
   );
   protected readonly captainNumero = computed(
-    () => this.config().joueurs.find((player) => player.capitaine)?.numero ?? null,
+    () => this.config().joueurs.find((player) => player.capitaine)?.playerId ?? null,
   );
 
   protected readonly substitutes = computed(() =>
@@ -94,9 +94,9 @@ export class App {
   );
 
   protected readonly playersAvailableToAdd = computed(() => {
-    const currentNames = new Set(this.config().joueurs.map((player) => player.nom));
+    const currentPlayerIds = new Set(this.config().joueurs.map((player) => player.playerId));
     return (this.players.value() ?? [])
-      .filter((player) => !currentNames.has(`${player.prenom} ${player.nom}`))
+      .filter((player) => !currentPlayerIds.has(player.id))
       .sort((a, b) =>
         a.prenom.localeCompare(b.prenom, 'fr', { sensitivity: 'base' }) ||
         a.nom.localeCompare(b.nom, 'fr', { sensitivity: 'base' }),
@@ -146,6 +146,13 @@ export class App {
     return `${parts[0]} ${lastName.charAt(0).toUpperCase()}.`;
   }
 
+  protected playerName(player: Player): string {
+    const directoryEntry = (this.players.value() ?? []).find((item) => item.id === player.playerId);
+    return directoryEntry
+      ? `${directoryEntry.prenom} ${directoryEntry.nom}`
+      : player.nom ?? `Joueur ${player.playerId}`;
+  }
+
   protected selectPlayer(event: Event): void {
     const value = (event.target as HTMLSelectElement).value;
     this.selectedPlayerId.set(value ? Number(value) : null);
@@ -155,8 +162,7 @@ export class App {
     if (!this.canAddPlayer()) return;
     const playerId = this.selectedPlayerId();
     const player = (this.players.value() ?? []).find((item) => item.id === playerId);
-    const fullName = player ? `${player.prenom} ${player.nom}` : '';
-    if (!player || this.config().joueurs.some((item) => item.nom === fullName)) return;
+    if (!player || this.config().joueurs.some((item) => item.playerId === player.id)) return;
 
     const currentPlayers = this.config().joueurs;
     const nextNumber = Math.max(0, ...currentPlayers.map((item) => item.numero)) + 1;
@@ -169,26 +175,26 @@ export class App {
 
     this.config.update((config) => ({
       ...config,
-      joueurs: [...config.joueurs, { numero: nextNumber, nom: fullName, poste: `R${nextSubstitute}` }],
+      joueurs: [...config.joueurs, { playerId: player.id, numero: nextNumber, poste: `R${nextSubstitute}` }],
     }));
     this.selectedPlayerId.set(null);
   }
 
-  protected removePlayer(numero: number): void {
+  protected removePlayer(playerId: number): void {
     this.config.update((config) => ({
       ...config,
-      joueurs: config.joueurs.filter((player) => player.numero !== numero),
+      joueurs: config.joueurs.filter((player) => player.playerId !== playerId),
     }));
   }
 
-  protected onPlayerDragStart(event: DragEvent, numero: number): void {
-    event.dataTransfer?.setData('text/plain', String(numero));
+  protected onPlayerDragStart(event: DragEvent, playerId: number): void {
+    event.dataTransfer?.setData('text/plain', String(playerId));
     if (event.dataTransfer) event.dataTransfer.effectAllowed = 'move';
-    this.draggingPlayerNumero.set(numero);
+    this.draggingPlayerId.set(playerId);
   }
 
   protected onPlayerDragEnd(): void {
-    this.draggingPlayerNumero.set(null);
+    this.draggingPlayerId.set(null);
   }
 
   protected onPitchDragOver(event: DragEvent): void {
@@ -198,22 +204,22 @@ export class App {
 
   protected onPitchDrop(event: DragEvent, poste: string): void {
     event.preventDefault();
-    this.draggingPlayerNumero.set(null);
-    const numero = Number(event.dataTransfer?.getData('text/plain'));
-    if (!Number.isInteger(numero) || !this.pitchPositions.includes(poste)) return;
+    this.draggingPlayerId.set(null);
+    const playerId = Number(event.dataTransfer?.getData('text/plain'));
+    if (!Number.isInteger(playerId) || !this.pitchPositions.includes(poste)) return;
     this.config.update((config) => ({
       ...config,
       joueurs: (() => {
-        const draggedPlayer = config.joueurs.find((player) => player.numero === numero);
+        const draggedPlayer = config.joueurs.find((player) => player.playerId === playerId);
         if (!draggedPlayer) return config.joueurs;
 
         const occupant = config.joueurs.find(
           (player) =>
-            player.numero !== numero && player.poste.toUpperCase() === poste,
+            player.playerId !== playerId && player.poste.toUpperCase() === poste,
         );
         return config.joueurs.map((player) => {
-          if (player.numero === numero) return { ...player, poste };
-          if (occupant && player.numero === occupant.numero) {
+          if (player.playerId === playerId) return { ...player, poste };
+          if (occupant && player.playerId === occupant.playerId) {
             return { ...player, poste: draggedPlayer.poste };
           }
           return player;
@@ -222,18 +228,18 @@ export class App {
     }));
   }
 
-  protected onSubstituteDrop(event: DragEvent, targetNumero?: number): void {
+  protected onSubstituteDrop(event: DragEvent, targetPlayerId?: number): void {
     event.preventDefault();
     event.stopPropagation();
-    this.draggingPlayerNumero.set(null);
-    const numero = Number(event.dataTransfer?.getData('text/plain'));
-    if (!Number.isInteger(numero)) return;
+    this.draggingPlayerId.set(null);
+    const playerId = Number(event.dataTransfer?.getData('text/plain'));
+    if (!Number.isInteger(playerId)) return;
 
     this.config.update((config) => {
-      const draggedPlayer = config.joueurs.find((player) => player.numero === numero);
+      const draggedPlayer = config.joueurs.find((player) => player.playerId === playerId);
       if (!draggedPlayer) return config;
 
-      if (targetNumero === undefined) {
+      if (targetPlayerId === undefined) {
         if (this.isSubstitute(draggedPlayer)) return config;
         const nextSubstitute =
           Math.max(
@@ -245,18 +251,18 @@ export class App {
         return {
           ...config,
           joueurs: config.joueurs.map((player) =>
-            player.numero === numero ? { ...player, poste: `R${nextSubstitute}` } : player,
+            player.playerId === playerId ? { ...player, poste: `R${nextSubstitute}` } : player,
           ),
         };
       }
 
-      const targetPlayer = config.joueurs.find((player) => player.numero === targetNumero);
-      if (!targetPlayer || targetPlayer.numero === draggedPlayer.numero) return config;
+      const targetPlayer = config.joueurs.find((player) => player.playerId === targetPlayerId);
+      if (!targetPlayer || targetPlayer.playerId === draggedPlayer.playerId) return config;
       return {
         ...config,
         joueurs: config.joueurs.map((player) => {
-          if (player.numero === draggedPlayer.numero) return { ...player, poste: targetPlayer.poste };
-          if (player.numero === targetPlayer.numero) return { ...player, poste: draggedPlayer.poste };
+          if (player.playerId === draggedPlayer.playerId) return { ...player, poste: targetPlayer.poste };
+          if (player.playerId === targetPlayer.playerId) return { ...player, poste: draggedPlayer.poste };
           return player;
         }),
       };
@@ -266,15 +272,15 @@ export class App {
   protected onTrashDrop(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    const numero = Number(event.dataTransfer?.getData('text/plain'));
-    this.draggingPlayerNumero.set(null);
-    if (Number.isInteger(numero)) this.removePlayer(numero);
+    const playerId = Number(event.dataTransfer?.getData('text/plain'));
+    this.draggingPlayerId.set(null);
+    if (Number.isInteger(playerId)) this.removePlayer(playerId);
   }
 
-  protected updatePlayerNumber(previousNumero: number, event: Event): void {
+  protected updatePlayerNumber(playerId: number, event: Event): void {
     const value = Number((event.target as HTMLInputElement).value);
     const isTaken = this.config().joueurs.some(
-      (player) => player.numero === value && player.numero !== previousNumero,
+      (player) => player.numero === value && player.playerId !== playerId,
     );
     if (!Number.isInteger(value) || value < 1 || isTaken) {
       window.alert('Le numéro doit être un entier positif et unique.');
@@ -284,21 +290,63 @@ export class App {
     this.config.update((config) => ({
       ...config,
       joueurs: config.joueurs.map((player) =>
-        player.numero === previousNumero ? { ...player, numero: value } : player,
+        player.playerId === playerId ? { ...player, numero: value } : player,
       ),
     }));
   }
 
   protected selectCaptain(event: Event): void {
     const value = (event.target as HTMLSelectElement).value;
-    const numero = value ? Number(value) : null;
+    const playerId = value ? Number(value) : null;
     this.config.update((config) => ({
       ...config,
       joueurs: config.joueurs.map((player) => ({
         ...player,
-        capitaine: numero !== null && player.numero === numero,
+        capitaine: playerId !== null && player.playerId === playerId,
       })),
     }));
+  }
+
+  private normalizeConfig(
+    config: MatchConfig & { joueurs: Array<Player & { playerId?: number }> },
+  ): MatchConfig {
+    const directory = this.players.value();
+    if (!directory) {
+      throw new Error('Le répertoire des joueurs n’est pas encore chargé.');
+    }
+
+    const joueurs = config.joueurs.map((player) => {
+      if (Number.isInteger(player.playerId)) {
+        return {
+          playerId: player.playerId,
+          numero: player.numero,
+          poste: player.poste,
+          capitaine: player.capitaine,
+        };
+      }
+
+      const legacyName = player.nom?.trim().toLocaleLowerCase('fr-FR');
+      const directoryEntry = directory.find((entry) => {
+        const fullName = `${entry.prenom} ${entry.nom}`.toLocaleLowerCase('fr-FR');
+        if (legacyName === fullName) return true;
+        const parts = legacyName?.split(/\s+/) ?? [];
+        return parts.length >= 2 &&
+          entry.prenom.toLocaleLowerCase('fr-FR') === parts[0] &&
+          entry.nom.charAt(0).toLocaleLowerCase('fr-FR') === parts[parts.length - 1].replace('.', '');
+      });
+
+      if (!directoryEntry) {
+        throw new Error(`Le joueur « ${player.nom ?? 'inconnu'} » n’existe pas dans le répertoire.`);
+      }
+      return {
+        playerId: directoryEntry.id,
+        numero: player.numero,
+        poste: player.poste,
+        capitaine: player.capitaine,
+      };
+    });
+
+    return { ...config, joueurs };
   }
 
   /** Reads and applies a match configuration selected by the user. */
@@ -313,14 +361,16 @@ export class App {
         if (typeof reader.result !== 'string') {
           throw new TypeError('Le contenu du fichier n’est pas du texte.');
         }
-        const config = JSON.parse(reader.result) as MatchConfig;
+        const config = this.normalizeConfig(
+          JSON.parse(reader.result) as MatchConfig & { joueurs: Array<Player & { playerId?: number }> },
+        );
         if (config.joueurs.length > this.maxPlayers) {
           window.alert(`Une configuration ne peut pas contenir plus de ${this.maxPlayers} joueurs.`);
           return;
         }
         this.config.set(config);
-      } catch {
-        window.alert('Le fichier JSON est invalide.');
+      } catch (error) {
+        window.alert(error instanceof Error ? error.message : 'Le fichier JSON est invalide.');
       }
       input.value = '';
     };

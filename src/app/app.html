@@ -38,8 +38,8 @@
         <label for="captain">Capitaine</label>
         <select id="captain" [value]="captainNumero() ?? ''" (change)="selectCaptain($event)">
           <option value="">Aucun capitaine</option>
-          @for (player of listedPlayers(); track player.nom) {
-            <option [value]="player.numero">{{ player.nom }}</option>
+          @for (player of listedPlayers(); track player.playerId) {
+            <option [value]="player.playerId">{{ playerName(player) }}</option>
           }
         </select>
       </div>
@@ -68,7 +68,7 @@
       }
       <div
         class="trash-drop"
-        [class.is-visible]="draggingPlayerNumero() !== null"
+        [class.is-visible]="draggingPlayerId() !== null"
         (dragover)="onPitchDragOver($event)"
         (drop)="onTrashDrop($event)"
       >
@@ -76,11 +76,11 @@
         <span>Déposer ici pour retirer le joueur</span>
       </div>
       <div id="players">
-        @for (player of listedPlayers(); track player.nom) {
+        @for (player of listedPlayers(); track player.playerId) {
           <div
             class="player"
             draggable="true"
-            (dragstart)="onPlayerDragStart($event, player.numero)"
+            (dragstart)="onPlayerDragStart($event, player.playerId)"
             (dragend)="onPlayerDragEnd()"
           >
             <input
@@ -88,12 +88,12 @@
               type="number"
               min="1"
               [value]="player.numero"
-              [attr.aria-label]="'Numéro de maillot de ' + player.nom"
-              (change)="updatePlayerNumber(player.numero, $event)"
+              [attr.aria-label]="'Numéro de maillot de ' + playerName(player)"
+              (change)="updatePlayerNumber(player.playerId, $event)"
             />
             <div>
               <div class="player-name">
-                {{ player.nom }}
+                {{ playerName(player) }}
                 @if (player.capitaine) {
                   <span class="captain-badge">C</span>
                 }
@@ -105,7 +105,7 @@
     </section>
 
     <section class="panel pitch-wrap">
-      <div class="pitch" id="pitch" [class.is-dragging]="draggingPlayerNumero() !== null">
+      <div class="pitch" id="pitch" [class.is-dragging]="draggingPlayerId() !== null">
         <div class="line halfway-line"></div>
         <div class="line center-circle"></div>
         <div class="line box-left"></div>
@@ -122,20 +122,20 @@
             (drop)="onPitchDrop($event, poste)"
           ></div>
         }
-        @for (player of starters(); track player.nom; let index = $index) {
+        @for (player of starters(); track player.playerId; let index = $index) {
           @if (positionFor(player, index); as position) {
             <div
               class="spot"
               draggable="true"
               [style.left]="position.left"
               [style.top]="position.top"
-              (dragstart)="onPlayerDragStart($event, player.numero)"
+              (dragstart)="onPlayerDragStart($event, player.playerId)"
               (dragend)="onPlayerDragEnd()"
               (dragover)="onPitchDragOver($event)"
               (drop)="onPitchDrop($event, player.poste.toUpperCase())"
             >
               <div class="ball">{{ player.numero }}</div>
-              <div class="label">{{ displayPlayerName(player.nom) }}</div>
+              <div class="label">{{ displayPlayerName(playerName(player)) }}</div>
             </div>
           }
         }
@@ -148,18 +148,18 @@
           (dragover)="onPitchDragOver($event)"
           (drop)="onSubstituteDrop($event)"
         >
-          @for (player of substitutes(); track player.nom) {
+          @for (player of substitutes(); track player.playerId) {
             <div
               class="substitute"
               draggable="true"
-              (dragstart)="onPlayerDragStart($event, player.numero)"
+              (dragstart)="onPlayerDragStart($event, player.playerId)"
               (dragend)="onPlayerDragEnd()"
               (dragover)="onPitchDragOver($event)"
-              (drop)="onSubstituteDrop($event, player.numero)"
+              (drop)="onSubstituteDrop($event, player.playerId)"
             >
               <div class="number">{{ player.numero }}</div>
               <div>
-                <div class="substitute-name">{{ displayPlayerName(player.nom) }}</div>
+                <div class="substitute-name">{{ displayPlayerName(playerName(player)) }}</div>
                 <div class="substitute-poste">{{ player.poste }}</div>
               </div>
             </div>

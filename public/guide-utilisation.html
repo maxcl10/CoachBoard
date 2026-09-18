@@ -113,9 +113,9 @@
   "date": "2026-09-12",
   "formation": "4-3-3",
   "joueurs": [
-    { "numero": 1, "nom": "Benjamin M.", "poste": "GB" },
-    { "numero": 2, "nom": "Daniel T.", "poste": "DG" },
-    { "numero": 10, "nom": "Yamin G.", "poste": "AG", "capitaine": true }
+    { "playerId": 28, "numero": 1, "poste": "GB" },
+    { "playerId": 11, "numero": 2, "poste": "DG" },
+    { "playerId": 19, "numero": 10, "poste": "AG", "capitaine": true }
   ]
 }</code></pre>
 
@@ -142,7 +142,7 @@
           </thead>
           <tbody>
             <tr><td><code>numero</code></td><td>Numéro porté par le joueur.</td></tr>
-            <tr><td><code>nom</code></td><td>Nom affiché dans la liste et sur le terrain.</td></tr>
+            <tr><td><code>playerId</code></td><td>Identifiant numérique du joueur dans <code>data/players.json</code>.</td></tr>
             <tr><td><code>poste</code></td><td>Code du poste. Les remplaçants utilisent <code>R1</code>, <code>R2</code>, etc.</td></tr>
             <tr><td><code>capitaine</code></td><td>Optionnel. Utilisez <code>true</code> pour afficher le badge du capitaine.</td></tr>
           </tbody>
