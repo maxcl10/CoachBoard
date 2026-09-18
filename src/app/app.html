@@ -39,7 +39,9 @@
         <select id="captain" [value]="captainNumero() ?? ''" (change)="selectCaptain($event)">
           <option value="">Aucun capitaine</option>
           @for (player of listedPlayers(); track player.playerId) {
-            <option [value]="player.playerId">{{ playerName(player) }}</option>
+            <option [value]="player.playerId" [selected]="player.captain">
+              {{ playerName(player) }}
+            </option>
           }
         </select>
       </div>
