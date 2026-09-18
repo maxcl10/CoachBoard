@@ -205,8 +205,9 @@
     display: grid !important;
     grid-template-columns: 220px minmax(0, 1fr);
     gap: 0.5rem !important;
-    height: calc(100vh - 105px) !important;
+    height: calc(100vh - 135px) !important;
     margin: 0 !important;
+    padding-bottom: 4px;
     align-items: stretch;
     overflow: visible !important;
   }
@@ -253,7 +254,7 @@
     appearance: none;
   }
   .pitch {
-    width: calc(100% - 4rem);
+   width: calc(100% - 4rem);
     margin-inline: 2rem;
     flex: none;
     max-height: calc(100% - 55px);
