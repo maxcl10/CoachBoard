@@ -25,28 +25,28 @@ export class App {
   protected readonly draggingPlayerId = signal<number | null>(null);
 
   protected readonly config = signal<MatchConfig>({
-    equipe: 'EJPS 2 U14 (1er)',
-    adversaire: 'Saint-Louis Neuweg (2e)',
-    lieu: 'Stade de l\'Au',
-    domicile: false,
-    typeMatch: 'Championnat U14 D1  J2',
+    team: 'EJPS 2 U14 (1er)',
+    opponent: 'Saint-Louis Neuweg (2e)',
+    venue: 'Stade de l\'Au',
+    home: false,
+    matchType: 'Championnat U14 D1  J2',
     date: '2026-09-19',
     formation: '4-3-3',
-    joueurs: [
-      { playerId: 28, numero: 1, poste: 'GB' },
-      { playerId: 13, numero: 5, poste: 'DG' },
-      { playerId: 8, numero: 2, poste: 'DCG' },
-      { playerId: 9, numero: 4, poste: 'DCD' },
-      { playerId: 3, numero: 3, poste: 'DD' },
-      { playerId: 5, numero: 6, poste: 'MDC' },
-      { playerId: 34, numero: 8, poste: 'MCG', capitaine: true },
-      { playerId: 17, numero: 19, poste: 'MCD' },
-      { playerId: 19, numero: 10, poste: 'AG' },
-      { playerId: 27, numero: 18, poste: 'AD' },
-      { playerId: 15, numero: 11, poste: 'AC' },
-      { playerId: 11, numero: 20, poste: 'R1' },
-      { playerId: 29, numero: 12, poste: 'R2' },
-      { playerId: 30, numero: 9, poste: 'R3' },
+    players: [
+      { playerId: 28, shirtNumber: 1, position: 'GB' },
+      { playerId: 13, shirtNumber: 5, position: 'DG' },
+      { playerId: 8, shirtNumber: 2, position: 'DCG' },
+      { playerId: 9, shirtNumber: 4, position: 'DCD' },
+      { playerId: 3, shirtNumber: 3, position: 'DD' },
+      { playerId: 5, shirtNumber: 6, position: 'MDC' },
+      { playerId: 34, shirtNumber: 8, position: 'MCG', captain: true },
+      { playerId: 17, shirtNumber: 19, position: 'MCD' },
+      { playerId: 19, shirtNumber: 10, position: 'AG' },
+      { playerId: 27, shirtNumber: 18, position: 'AD' },
+      { playerId: 15, shirtNumber: 11, position: 'AC' },
+      { playerId: 11, shirtNumber: 20, position: 'R1' },
+      { playerId: 29, shirtNumber: 12, position: 'R2' },
+      { playerId: 30, shirtNumber: 9, position: 'R3' },
     ],
   });
 
@@ -74,41 +74,41 @@ export class App {
   ];
 
   protected readonly starters = computed(() =>
-    this.config().joueurs.filter((player) => !this.isSubstitute(player)),
+    this.config().players.filter((player) => !this.isSubstitute(player)),
   );
 
   protected readonly listedPlayers = computed(() =>
-    [...this.config().joueurs].sort((a, b) => a.numero - b.numero),
+    [...this.config().players].sort((a, b) => a.shirtNumber - b.shirtNumber),
   );
   protected readonly canAddPlayer = computed(
-    () => this.config().joueurs.length < this.maxPlayers,
+    () => this.config().players.length < this.maxPlayers,
   );
   protected readonly captainNumero = computed(
-    () => this.config().joueurs.find((player) => player.capitaine)?.playerId ?? null,
+    () => this.config().players.find((player) => player.captain)?.playerId ?? null,
   );
 
   protected readonly substitutes = computed(() =>
     this.config()
-      .joueurs.filter((player) => this.isSubstitute(player))
-      .sort((a, b) => Number(a.poste.slice(1)) - Number(b.poste.slice(1))),
+      .players.filter((player) => this.isSubstitute(player))
+      .sort((a, b) => Number(a.position.slice(1)) - Number(b.position.slice(1))),
   );
 
   protected readonly playersAvailableToAdd = computed(() => {
-    const currentPlayerIds = new Set(this.config().joueurs.map((player) => player.playerId));
+    const currentPlayerIds = new Set(this.config().players.map((player) => player.playerId));
     return (this.players.value() ?? [])
       .filter((player) => !currentPlayerIds.has(player.id))
       .sort((a, b) =>
-        a.prenom.localeCompare(b.prenom, 'fr', { sensitivity: 'base' }) ||
-        a.nom.localeCompare(b.nom, 'fr', { sensitivity: 'base' }),
+        a.firstName.localeCompare(b.firstName, 'fr', { sensitivity: 'base' }) ||
+        a.lastName.localeCompare(b.lastName, 'fr', { sensitivity: 'base' }),
       );
   });
 
   protected readonly homeTeam = computed(() =>
-    this.config().domicile ? this.config().equipe : this.config().adversaire,
+    this.config().home ? this.config().team : this.config().opponent,
   );
 
   protected readonly awayTeam = computed(() =>
-    this.config().domicile ? this.config().adversaire : this.config().equipe,
+    this.config().home ? this.config().opponent : this.config().team,
   );
 
   /** Returns the pitch coordinates for a starter, offsetting duplicate positions. */
@@ -119,12 +119,12 @@ export class App {
     left: string;
     top: string;
   } | null {
-    const position = this.positionMap[player.poste.toUpperCase()];
+    const position = this.positionMap[player.position.toUpperCase()];
     if (!position) return null;
 
     const previousPlayers = this.starters()
       .slice(0, index)
-      .filter((item) => item.poste.toUpperCase() === player.poste.toUpperCase()).length;
+      .filter((item) => item.position.toUpperCase() === player.position.toUpperCase()).length;
     let offset = 0;
     if (previousPlayers > 0) {
       offset = previousPlayers % 2 === 1 ? 9 : -9;
@@ -135,22 +135,32 @@ export class App {
 
   /** Identifies substitute positions such as R1, R2, and R3. */
   protected isSubstitute(player: Player): boolean {
-    return /^R\d+$/i.test((player.poste || '').trim());
+    return /^R\d+$/i.test((player.position || '').trim());
   }
 
-  protected displayPlayerName(name: string): string {
-    const parts = name.trim().split(/\s+/);
-    if (parts.length < 2) return name;
-
-    const lastName = parts[parts.length - 1].replace(/\.+$/, '');
-    return `${parts[0]} ${lastName.charAt(0).toUpperCase()}.`;
+  private nextSubstitutePosition(players: Player[]): string {
+    const usedSlots = new Set(
+      players
+        .filter((player) => this.isSubstitute(player))
+        .map((player) => Number(player.position.slice(1))),
+    );
+    let slot = 1;
+    while (usedSlots.has(slot)) slot += 1;
+    return `R${slot}`;
   }
 
   protected playerName(player: Player): string {
     const directoryEntry = (this.players.value() ?? []).find((item) => item.id === player.playerId);
     return directoryEntry
-      ? `${directoryEntry.prenom} ${directoryEntry.nom}`
-      : player.nom ?? `Joueur ${player.playerId}`;
+      ? `${directoryEntry.firstName} ${directoryEntry.lastName}`
+      : `Joueur ${player.playerId}`;
+  }
+
+  protected shortPlayerName(player: Player): string {
+    const directoryEntry = (this.players.value() ?? []).find((item) => item.id === player.playerId);
+    return directoryEntry
+      ? `${directoryEntry.firstName} ${directoryEntry.lastName.charAt(0).toUpperCase()}.`
+      : `Joueur ${player.playerId}`;
   }
 
   protected selectPlayer(event: Event): void {
@@ -162,20 +172,15 @@ export class App {
     if (!this.canAddPlayer()) return;
     const playerId = this.selectedPlayerId();
     const player = (this.players.value() ?? []).find((item) => item.id === playerId);
-    if (!player || this.config().joueurs.some((item) => item.playerId === player.id)) return;
+    if (!player || this.config().players.some((item) => item.playerId === player.id)) return;
 
-    const currentPlayers = this.config().joueurs;
-    const nextNumber = Math.max(0, ...currentPlayers.map((item) => item.numero)) + 1;
-    const nextSubstitute = Math.max(
-      0,
-      ...currentPlayers
-        .filter((item) => this.isSubstitute(item))
-        .map((item) => Number(item.poste.slice(1))),
-    ) + 1;
+    const currentPlayers = this.config().players;
+    const nextNumber = Math.max(0, ...currentPlayers.map((item) => item.shirtNumber)) + 1;
+    const nextSubstitute = this.nextSubstitutePosition(currentPlayers);
 
     this.config.update((config) => ({
       ...config,
-      joueurs: [...config.joueurs, { playerId: player.id, numero: nextNumber, poste: `R${nextSubstitute}` }],
+      players: [...config.players, { playerId: player.id, shirtNumber: nextNumber, position: nextSubstitute }],
     }));
     this.selectedPlayerId.set(null);
   }
@@ -183,7 +188,7 @@ export class App {
   protected removePlayer(playerId: number): void {
     this.config.update((config) => ({
       ...config,
-      joueurs: config.joueurs.filter((player) => player.playerId !== playerId),
+      players: config.players.filter((player) => player.playerId !== playerId),
     }));
   }
 
@@ -202,25 +207,25 @@ export class App {
     if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
   }
 
-  protected onPitchDrop(event: DragEvent, poste: string): void {
+  protected onPitchDrop(event: DragEvent, position: string): void {
     event.preventDefault();
     this.draggingPlayerId.set(null);
     const playerId = Number(event.dataTransfer?.getData('text/plain'));
-    if (!Number.isInteger(playerId) || !this.pitchPositions.includes(poste)) return;
+    if (!Number.isInteger(playerId) || !this.pitchPositions.includes(position)) return;
     this.config.update((config) => ({
       ...config,
-      joueurs: (() => {
-        const draggedPlayer = config.joueurs.find((player) => player.playerId === playerId);
-        if (!draggedPlayer) return config.joueurs;
+      players: (() => {
+        const draggedPlayer = config.players.find((player) => player.playerId === playerId);
+        if (!draggedPlayer) return config.players;
 
-        const occupant = config.joueurs.find(
+        const occupant = config.players.find(
           (player) =>
-            player.playerId !== playerId && player.poste.toUpperCase() === poste,
+            player.playerId !== playerId && player.position.toUpperCase() === position,
         );
-        return config.joueurs.map((player) => {
-          if (player.playerId === playerId) return { ...player, poste };
+        return config.players.map((player) => {
+          if (player.playerId === playerId) return { ...player, position };
           if (occupant && player.playerId === occupant.playerId) {
-            return { ...player, poste: draggedPlayer.poste };
+            return { ...player, position: draggedPlayer.position };
           }
           return player;
         });
@@ -236,33 +241,27 @@ export class App {
     if (!Number.isInteger(playerId)) return;
 
     this.config.update((config) => {
-      const draggedPlayer = config.joueurs.find((player) => player.playerId === playerId);
+      const draggedPlayer = config.players.find((player) => player.playerId === playerId);
       if (!draggedPlayer) return config;
 
       if (targetPlayerId === undefined) {
         if (this.isSubstitute(draggedPlayer)) return config;
-        const nextSubstitute =
-          Math.max(
-            0,
-            ...config.joueurs
-              .filter((player) => this.isSubstitute(player))
-              .map((player) => Number(player.poste.slice(1))),
-          ) + 1;
+        const nextSubstitute = this.nextSubstitutePosition(config.players);
         return {
           ...config,
-          joueurs: config.joueurs.map((player) =>
-            player.playerId === playerId ? { ...player, poste: `R${nextSubstitute}` } : player,
+          players: config.players.map((player) =>
+            player.playerId === playerId ? { ...player, position: nextSubstitute } : player,
           ),
         };
       }
 
-      const targetPlayer = config.joueurs.find((player) => player.playerId === targetPlayerId);
+      const targetPlayer = config.players.find((player) => player.playerId === targetPlayerId);
       if (!targetPlayer || targetPlayer.playerId === draggedPlayer.playerId) return config;
       return {
         ...config,
-        joueurs: config.joueurs.map((player) => {
-          if (player.playerId === draggedPlayer.playerId) return { ...player, poste: targetPlayer.poste };
-          if (player.playerId === targetPlayer.playerId) return { ...player, poste: draggedPlayer.poste };
+        players: config.players.map((player) => {
+          if (player.playerId === draggedPlayer.playerId) return { ...player, position: targetPlayer.position };
+          if (player.playerId === targetPlayer.playerId) return { ...player, position: draggedPlayer.position };
           return player;
         }),
       };
@@ -279,8 +278,8 @@ export class App {
 
   protected updatePlayerNumber(playerId: number, event: Event): void {
     const value = Number((event.target as HTMLInputElement).value);
-    const isTaken = this.config().joueurs.some(
-      (player) => player.numero === value && player.playerId !== playerId,
+    const isTaken = this.config().players.some(
+      (player) => player.shirtNumber === value && player.playerId !== playerId,
     );
     if (!Number.isInteger(value) || value < 1 || isTaken) {
       window.alert('Le numéro doit être un entier positif et unique.');
@@ -289,8 +288,8 @@ export class App {
 
     this.config.update((config) => ({
       ...config,
-      joueurs: config.joueurs.map((player) =>
-        player.playerId === playerId ? { ...player, numero: value } : player,
+      players: config.players.map((player) =>
+        player.playerId === playerId ? { ...player, shirtNumber: value } : player,
       ),
     }));
   }
@@ -300,53 +299,11 @@ export class App {
     const playerId = value ? Number(value) : null;
     this.config.update((config) => ({
       ...config,
-      joueurs: config.joueurs.map((player) => ({
+      players: config.players.map((player) => ({
         ...player,
-        capitaine: playerId !== null && player.playerId === playerId,
+        captain: playerId !== null && player.playerId === playerId,
       })),
     }));
-  }
-
-  private normalizeConfig(
-    config: MatchConfig & { joueurs: Array<Player & { playerId?: number }> },
-  ): MatchConfig {
-    const directory = this.players.value();
-    if (!directory) {
-      throw new Error('Le répertoire des joueurs n’est pas encore chargé.');
-    }
-
-    const joueurs = config.joueurs.map((player) => {
-      if (Number.isInteger(player.playerId)) {
-        return {
-          playerId: player.playerId,
-          numero: player.numero,
-          poste: player.poste,
-          capitaine: player.capitaine,
-        };
-      }
-
-      const legacyName = player.nom?.trim().toLocaleLowerCase('fr-FR');
-      const directoryEntry = directory.find((entry) => {
-        const fullName = `${entry.prenom} ${entry.nom}`.toLocaleLowerCase('fr-FR');
-        if (legacyName === fullName) return true;
-        const parts = legacyName?.split(/\s+/) ?? [];
-        return parts.length >= 2 &&
-          entry.prenom.toLocaleLowerCase('fr-FR') === parts[0] &&
-          entry.nom.charAt(0).toLocaleLowerCase('fr-FR') === parts[parts.length - 1].replace('.', '');
-      });
-
-      if (!directoryEntry) {
-        throw new Error(`Le joueur « ${player.nom ?? 'inconnu'} » n’existe pas dans le répertoire.`);
-      }
-      return {
-        playerId: directoryEntry.id,
-        numero: player.numero,
-        poste: player.poste,
-        capitaine: player.capitaine,
-      };
-    });
-
-    return { ...config, joueurs };
   }
 
   /** Reads and applies a match configuration selected by the user. */
@@ -361,10 +318,8 @@ export class App {
         if (typeof reader.result !== 'string') {
           throw new TypeError('Le contenu du fichier n’est pas du texte.');
         }
-        const config = this.normalizeConfig(
-          JSON.parse(reader.result) as MatchConfig & { joueurs: Array<Player & { playerId?: number }> },
-        );
-        if (config.joueurs.length > this.maxPlayers) {
+        const config = JSON.parse(reader.result) as MatchConfig;
+        if (config.players.length > this.maxPlayers) {
           window.alert(`Une configuration ne peut pas contenir plus de ${this.maxPlayers} joueurs.`);
           return;
         }

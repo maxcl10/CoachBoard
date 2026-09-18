@@ -1,5 +1,5 @@
 export interface PlayerDirectoryEntry {
   id: number;
-  prenom: string;
-  nom: string;
+  firstName: string;
+  lastName: string;
 }

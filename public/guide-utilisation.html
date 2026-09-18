@@ -102,20 +102,20 @@
         <h2>2. Préparer le fichier JSON</h2>
         <p>
           Le fichier doit contenir les informations du match et la liste des
-          joueurs. Voici un exemple complet :
+          players. Voici un exemple complet :
         </p>
         <pre><code>{
-  "equipe": "EJPS 2 U14",
-  "adversaire": "Alsasud",
-  "lieu": "Stade Municipal",
-  "domicile": false,
-  "typeMatch": "Championnat J1",
+  "team": "EJPS 2 U14",
+  "opponent": "Alsasud",
+  "venue": "Stade Municipal",
+  "home": false,
+  "matchType": "Championnat J1",
   "date": "2026-09-12",
   "formation": "4-3-3",
-  "joueurs": [
-    { "playerId": 28, "numero": 1, "poste": "GB" },
-    { "playerId": 11, "numero": 2, "poste": "DG" },
-    { "playerId": 19, "numero": 10, "poste": "AG", "capitaine": true }
+  "players": [
+    { "playerId": 28, "shirtNumber": 1, "position": "GB" },
+    { "playerId": 11, "shirtNumber": 2, "position": "DG" },
+    { "playerId": 19, "shirtNumber": 10, "position": "AG", "captain": true }
   ]
 }</code></pre>
 
@@ -125,11 +125,11 @@
             <tr><th>Champ</th><th>Description</th><th>Exemple</th></tr>
           </thead>
           <tbody>
-            <tr><td><code>equipe</code></td><td>Nom de votre équipe.</td><td>EJPS 2 U14</td></tr>
-            <tr><td><code>adversaire</code></td><td>Nom de l'équipe adverse.</td><td>Alsasud</td></tr>
-            <tr><td><code>lieu</code></td><td>Lieu de la rencontre. Champ facultatif.</td><td>Stade Municipal</td></tr>
-            <tr><td><code>domicile</code></td><td><code>true</code> si votre équipe joue à domicile, sinon <code>false</code>.</td><td>false</td></tr>
-            <tr><td><code>typeMatch</code></td><td>Type ou journée du match.</td><td>Championnat J1</td></tr>
+            <tr><td><code>team</code></td><td>Nom de votre équipe.</td><td>EJPS 2 U14</td></tr>
+            <tr><td><code>opponent</code></td><td>Nom de l'équipe adverse.</td><td>Alsasud</td></tr>
+            <tr><td><code>venue</code></td><td>Lieu de la rencontre. Champ facultatif.</td><td>Stade Municipal</td></tr>
+            <tr><td><code>home</code></td><td><code>true</code> si votre équipe joue à home, sinon <code>false</code>.</td><td>false</td></tr>
+            <tr><td><code>matchType</code></td><td>Type ou journée du match.</td><td>Championnat J1</td></tr>
             <tr><td><code>date</code></td><td>Date au format ISO <code>AAAA-MM-JJ</code>.</td><td>2026-09-12</td></tr>
             <tr><td><code>formation</code></td><td>Nom de la formation affichée.</td><td>4-3-3</td></tr>
           </tbody>
@@ -141,19 +141,19 @@
             <tr><th>Champ</th><th>Description</th></tr>
           </thead>
           <tbody>
-            <tr><td><code>numero</code></td><td>Numéro porté par le joueur.</td></tr>
+            <tr><td><code>shirtNumber</code></td><td>Numéro porté par le joueur.</td></tr>
             <tr><td><code>playerId</code></td><td>Identifiant numérique du joueur dans <code>data/players.json</code>.</td></tr>
-            <tr><td><code>poste</code></td><td>Code du poste. Les remplaçants utilisent <code>R1</code>, <code>R2</code>, etc.</td></tr>
-            <tr><td><code>capitaine</code></td><td>Optionnel. Utilisez <code>true</code> pour afficher le badge du capitaine.</td></tr>
+            <tr><td><code>position</code></td><td>Code du position. Les remplaçants utilisent <code>R1</code>, <code>R2</code>, etc.</td></tr>
+            <tr><td><code>captain</code></td><td>Optionnel. Utilisez <code>true</code> pour afficher le badge du captain.</td></tr>
           </tbody>
         </table>
         <p>
           Les codes de postes reconnus pour le terrain sont notamment
           <code>GB</code>, <code>DG</code>, <code>DD</code>, <code>DCG</code>,
           <code>DCD</code>, <code>MDC</code>, <code>MCG</code>, <code>MCD</code>,
-          <code>AG</code>, <code>AD</code> et <code>AC</code>. Un poste non
+          <code>AG</code>, <code>AD</code> et <code>AC</code>. Un position non
           reconnu n'est pas placé sur le schéma du terrain, mais reste visible
-          dans la liste des joueurs.
+          dans la liste des players.
         </p>
 
         <h2>5. Imprimer la feuille</h2>
@@ -168,8 +168,8 @@
         <ul>
           <li><strong>Le fichier ne se charge pas :</strong> vérifiez qu'il s'agit d'un JSON valide et qu'il porte l'extension <code>.json</code>.</li>
           <li><strong>La date ne s'affiche pas correctement :</strong> utilisez strictement le format <code>AAAA-MM-JJ</code>.</li>
-          <li><strong>Un joueur n'apparaît pas sur le terrain :</strong> vérifiez le code indiqué dans le champ <code>poste</code>.</li>
-          <li><strong>Deux joueurs se superposent :</strong> l'application décale automatiquement les joueurs partageant le même poste ; vérifiez toutefois que les postes sont corrects.</li>
+          <li><strong>Un joueur n'apparaît pas sur le terrain :</strong> vérifiez le code indiqué dans le champ <code>position</code>.</li>
+          <li><strong>Deux players se superposent :</strong> l'application décale automatiquement les players partageant le même position ; vérifiez toutefois que les postes sont corrects.</li>
         </ul>
       </article>
     </main>

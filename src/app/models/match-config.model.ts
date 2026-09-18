@@ -1,12 +1,12 @@
 import { Player } from './player.model';
 
 export interface MatchConfig {
-  equipe: string;
-  adversaire: string;
-  lieu?: string;
-  domicile: boolean;
-  typeMatch: string;
+  team: string;
+  opponent: string;
+  venue?: string;
+  home: boolean;
+  matchType: string;
   date: string;
   formation: string;
-  joueurs: Player[];
+  players: Player[];
 }

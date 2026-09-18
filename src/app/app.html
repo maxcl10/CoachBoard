@@ -25,7 +25,7 @@
       <div class="team">{{ awayTeam() }}</div>
     </div>
     <div class="meta">
-      <div class="meta-box"><span>Type de match</span><strong>{{ config().typeMatch || '—' }}</strong></div>
+      <div class="meta-box"><span>Type de match</span><strong>{{ config().matchType || '—' }}</strong></div>
       <div class="meta-box"><span>Date</span><strong>{{ config().date ? (((config().date! | date:'EEEE':'':'fr-FR' | titlecase) ?? '') + (config().date! | date:' dd MMMM yyyy':'':'fr-FR')) : '—' }}</strong></div>
       <div class="meta-box"><span>Système</span><strong>{{ config().formation || '—' }}</strong></div>
     </div>
@@ -50,7 +50,7 @@
             <select id="playerToAdd" (change)="selectPlayer($event)">
               <option value="">Sélectionner un joueur</option>
               @for (player of playersAvailableToAdd(); track player.id) {
-                <option [value]="player.id">{{ player.prenom }} {{ player.nom }}</option>
+                <option [value]="player.id">{{ player.firstName }} {{ player.lastName }}</option>
               }
             </select>
             <button
@@ -87,14 +87,14 @@
               class="shirt-number"
               type="number"
               min="1"
-              [value]="player.numero"
+              [value]="player.shirtNumber"
               [attr.aria-label]="'Numéro de maillot de ' + playerName(player)"
               (change)="updatePlayerNumber(player.playerId, $event)"
             />
             <div>
               <div class="player-name">
                 {{ playerName(player) }}
-                @if (player.capitaine) {
+                @if (player.captain) {
                   <span class="captain-badge">C</span>
                 }
               </div>
@@ -112,14 +112,14 @@
         <div class="line box-right"></div>
         <div class="line goal-left"></div>
         <div class="line goal-right"></div>
-        @for (poste of pitchPositions; track poste) {
+        @for (position of pitchPositions; track position) {
           <div
             class="drop-zone"
-            [style.left]="positionMap[poste][0] + '%'"
-            [style.top]="positionMap[poste][1] + '%'"
-            [attr.aria-label]="'Déposer à la position ' + poste"
+            [style.left]="positionMap[position][0] + '%'"
+            [style.top]="positionMap[position][1] + '%'"
+            [attr.aria-label]="'Déposer à la position ' + position"
             (dragover)="onPitchDragOver($event)"
-            (drop)="onPitchDrop($event, poste)"
+            (drop)="onPitchDrop($event, position)"
           ></div>
         }
         @for (player of starters(); track player.playerId; let index = $index) {
@@ -132,10 +132,10 @@
               (dragstart)="onPlayerDragStart($event, player.playerId)"
               (dragend)="onPlayerDragEnd()"
               (dragover)="onPitchDragOver($event)"
-              (drop)="onPitchDrop($event, player.poste.toUpperCase())"
+              (drop)="onPitchDrop($event, player.position.toUpperCase())"
             >
-              <div class="ball">{{ player.numero }}</div>
-              <div class="label">{{ displayPlayerName(playerName(player)) }}</div>
+              <div class="ball">{{ player.shirtNumber }}</div>
+              <div class="label">{{ shortPlayerName(player) }}</div>
             </div>
           }
         }
@@ -157,10 +157,10 @@
               (dragover)="onPitchDragOver($event)"
               (drop)="onSubstituteDrop($event, player.playerId)"
             >
-              <div class="number">{{ player.numero }}</div>
+              <div class="number">{{ player.shirtNumber }}</div>
               <div>
-                <div class="substitute-name">{{ displayPlayerName(playerName(player)) }}</div>
-                <div class="substitute-poste">{{ player.poste }}</div>
+                <div class="substitute-name">{{ shortPlayerName(player) }}</div>
+                <div class="substitute-position">{{ player.position }}</div>
               </div>
             </div>
           }
