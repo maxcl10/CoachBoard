@@ -32,30 +32,51 @@
   </section>
 
   <div class="layout">
-    <section class="panel">
+    <section class="panel player-panel">
       <h2>Joueurs</h2>      
-      <div class="player-editor">
-        <label for="playerToAdd">Ajouter un joueur</label>
-        <div class="player-editor-row">
-          <select id="playerToAdd" (change)="selectPlayer($event)">
-            <option value="">Sélectionner un joueur</option>
-            @for (player of playersAvailableToAdd(); track player.id) {
-              <option [value]="player.id">{{ player.nom }}</option>
-            }
-          </select>
-          <button
-            class="btn"
-            type="button"
-            [disabled]="selectedPlayerId() === null"
-            (click)="addPlayer()"
-          >
-            Ajouter
-          </button>
+      <div class="captain-selector">
+        <label for="captain">Capitaine</label>
+        <select id="captain" [value]="captainNumero() ?? ''" (change)="selectCaptain($event)">
+          <option value="">Aucun capitaine</option>
+          @for (player of listedPlayers(); track player.nom) {
+            <option [value]="player.numero">{{ player.nom }}</option>
+          }
+        </select>
+      </div>
+      @if (canAddPlayer()) {
+        <div class="player-editor">
+          <label for="playerToAdd">Ajouter un joueur</label>
+          <div class="player-editor-row">
+            <select id="playerToAdd" (change)="selectPlayer($event)">
+              <option value="">Sélectionner un joueur</option>
+              @for (player of playersAvailableToAdd(); track player.id) {
+                <option [value]="player.id">{{ player.prenom }} {{ player.nom }}</option>
+              }
+            </select>
+            <button
+              class="btn"
+              type="button"
+              [disabled]="selectedPlayerId() === null"
+              aria-label="Ajouter le joueur sélectionné"
+              title="Ajouter le joueur sélectionné"
+              (click)="addPlayer()"
+            >
+              <span aria-hidden="true">&plus;</span>
+            </button>
+          </div>
         </div>
-        <small>Les nouveaux joueurs sont ajoutés comme remplaçants.</small>
+      }
+      <div
+        class="trash-drop"
+        [class.is-visible]="draggingPlayerNumero() !== null"
+        (dragover)="onPitchDragOver($event)"
+        (drop)="onTrashDrop($event)"
+      >
+        <span aria-hidden="true">🗑️</span>
+        <span>Déposer ici pour retirer le joueur</span>
       </div>
       <div id="players">
-        @for (player of config().joueurs; track player.nom) {
+        @for (player of listedPlayers(); track player.nom) {
           <div
             class="player"
             draggable="true"
@@ -72,30 +93,12 @@
             />
             <div>
               <div class="player-name">
-                {{ displayPlayerName(player.nom) }}
+                {{ player.nom }}
                 @if (player.capitaine) {
                   <span class="captain-badge">C</span>
                 }
               </div>
             </div>
-            <label class="captain-control">
-              <input
-                type="checkbox"
-                [checked]="player.capitaine"
-                [attr.aria-label]="'Capitaine : ' + player.nom"
-                (change)="setCaptain(player.numero, $event)"
-              />
-              C
-            </label>
-            <button
-              class="remove-player"
-              type="button"
-              [attr.aria-label]="'Retirer ' + player.nom"
-              [title]="'Retirer ' + player.nom"
-              (click)="removePlayer(player.numero)"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
           </div>
         }
       </div>

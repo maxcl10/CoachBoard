@@ -16,6 +16,7 @@ registerLocaleData(localeFr, 'fr-FR');
   imports: [DatePipe, TitleCasePipe],
 })
 export class App {
+  private readonly maxPlayers = 14;
   private readonly playersService = inject(PlayersService);
   protected readonly players = rxResource({
     stream: () => this.playersService.getPlayers(),
@@ -32,20 +33,20 @@ export class App {
     date: '2026-09-19',
     formation: '4-3-3',
     joueurs: [
-      { numero: 1, nom: 'Benjamin M.', poste: 'GB' },
-      { numero: 5, nom: 'Matthew M.', poste: 'DG' },
-      { numero: 2, nom: 'Samuel H.', poste: 'DCG' },
-      { numero: 4, nom: 'Simeon H.', poste: 'DCD' },
-      { numero: 3, nom: 'Alexandre B.', poste: 'DD' },
-      { numero: 6, nom: 'Louën F.', poste: 'MDC' },
-      { numero: 8, nom: 'Hugo K.', poste: 'MCG', capitaine: true },
-      { numero: 19, nom: 'Leo O.', poste: 'MCD' },
-      { numero: 10, nom: 'Yamin G.', poste: 'AG' },
-      { numero: 18, nom: 'Djelle G.', poste: 'AD' },
-      { numero: 11, nom: 'Matteo S.', poste: 'AC' },
+      { numero: 1, nom: 'Benjamin Medete', poste: 'GB' },
+      { numero: 5, nom: 'Matthew Molloy', poste: 'DG' },
+      { numero: 2, nom: 'Samuel Hari', poste: 'DCG' },
+      { numero: 4, nom: 'Siméon Hari', poste: 'DCD' },
+      { numero: 3, nom: 'Alexandre Bihl', poste: 'DD' },
+      { numero: 6, nom: 'Louën Fluhr', poste: 'MDC' },
+      { numero: 8, nom: 'Hugo Kauffmann', poste: 'MCG', capitaine: true },
+      { numero: 19, nom: 'Leo Ouk', poste: 'MCD' },
+      { numero: 10, nom: 'Yamin Gasser', poste: 'AG' },
+      { numero: 18, nom: 'Djelle Gashi', poste: 'AD' },
+      { numero: 11, nom: 'Matteo Skatar', poste: 'AC' },
       { numero: 20, nom: 'Daniel T.', poste: 'R1' },
-      { numero: 12, nom: 'Elie K.', poste: 'R2' },
-      { numero: 9, nom: 'Cays L.', poste: 'R3' },
+      { numero: 12, nom: 'Elie Kalenga Kapiamba', poste: 'R2' },
+      { numero: 9, nom: 'Cays Letourneau', poste: 'R3' },
     ],
   });
 
@@ -76,6 +77,16 @@ export class App {
     this.config().joueurs.filter((player) => !this.isSubstitute(player)),
   );
 
+  protected readonly listedPlayers = computed(() =>
+    [...this.config().joueurs].sort((a, b) => a.numero - b.numero),
+  );
+  protected readonly canAddPlayer = computed(
+    () => this.config().joueurs.length < this.maxPlayers,
+  );
+  protected readonly captainNumero = computed(
+    () => this.config().joueurs.find((player) => player.capitaine)?.numero ?? null,
+  );
+
   protected readonly substitutes = computed(() =>
     this.config()
       .joueurs.filter((player) => this.isSubstitute(player))
@@ -84,7 +95,12 @@ export class App {
 
   protected readonly playersAvailableToAdd = computed(() => {
     const currentNames = new Set(this.config().joueurs.map((player) => player.nom));
-    return (this.players.value() ?? []).filter((player) => !currentNames.has(player.nom));
+    return (this.players.value() ?? [])
+      .filter((player) => !currentNames.has(`${player.prenom} ${player.nom}`))
+      .sort((a, b) =>
+        a.prenom.localeCompare(b.prenom, 'fr', { sensitivity: 'base' }) ||
+        a.nom.localeCompare(b.nom, 'fr', { sensitivity: 'base' }),
+      );
   });
 
   protected readonly homeTeam = computed(() =>
@@ -136,9 +152,11 @@ export class App {
   }
 
   protected addPlayer(): void {
+    if (!this.canAddPlayer()) return;
     const playerId = this.selectedPlayerId();
     const player = (this.players.value() ?? []).find((item) => item.id === playerId);
-    if (!player || this.config().joueurs.some((item) => item.nom === player.nom)) return;
+    const fullName = player ? `${player.prenom} ${player.nom}` : '';
+    if (!player || this.config().joueurs.some((item) => item.nom === fullName)) return;
 
     const currentPlayers = this.config().joueurs;
     const nextNumber = Math.max(0, ...currentPlayers.map((item) => item.numero)) + 1;
@@ -151,7 +169,7 @@ export class App {
 
     this.config.update((config) => ({
       ...config,
-      joueurs: [...config.joueurs, { numero: nextNumber, nom: player.nom, poste: `R${nextSubstitute}` }],
+      joueurs: [...config.joueurs, { numero: nextNumber, nom: fullName, poste: `R${nextSubstitute}` }],
     }));
     this.selectedPlayerId.set(null);
   }
@@ -245,6 +263,14 @@ export class App {
     });
   }
 
+  protected onTrashDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const numero = Number(event.dataTransfer?.getData('text/plain'));
+    this.draggingPlayerNumero.set(null);
+    if (Number.isInteger(numero)) this.removePlayer(numero);
+  }
+
   protected updatePlayerNumber(previousNumero: number, event: Event): void {
     const value = Number((event.target as HTMLInputElement).value);
     const isTaken = this.config().joueurs.some(
@@ -263,13 +289,14 @@ export class App {
     }));
   }
 
-  protected setCaptain(numero: number, event: Event): void {
-    const isCaptain = (event.target as HTMLInputElement).checked;
+  protected selectCaptain(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    const numero = value ? Number(value) : null;
     this.config.update((config) => ({
       ...config,
       joueurs: config.joueurs.map((player) => ({
         ...player,
-        capitaine: isCaptain ? player.numero === numero : player.numero === numero ? false : player.capitaine,
+        capitaine: numero !== null && player.numero === numero,
       })),
     }));
   }
@@ -286,7 +313,12 @@ export class App {
         if (typeof reader.result !== 'string') {
           throw new TypeError('Le contenu du fichier n’est pas du texte.');
         }
-        this.config.set(JSON.parse(reader.result) as MatchConfig);
+        const config = JSON.parse(reader.result) as MatchConfig;
+        if (config.joueurs.length > this.maxPlayers) {
+          window.alert(`Une configuration ne peut pas contenir plus de ${this.maxPlayers} joueurs.`);
+          return;
+        }
+        this.config.set(config);
       } catch {
         window.alert('Le fichier JSON est invalide.');
       }
