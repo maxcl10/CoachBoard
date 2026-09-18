@@ -5,6 +5,9 @@
       <div>
       <h1>Feuille d'avant-match</h1>
       <small>Charge ton fichier config.json pour afficher automatiquement la composition.</small>
+      @if (players.value(); as availablePlayers) {
+        <small>{{ availablePlayers.length }} joueurs disponibles dans le répertoire.</small>
+      }
       </div>
     </div>
     <div class="actions">
@@ -31,36 +34,105 @@
   <div class="layout">
     <section class="panel">
       <h2>Joueurs</h2>      
+      <div class="player-editor">
+        <label for="playerToAdd">Ajouter un joueur</label>
+        <div class="player-editor-row">
+          <select id="playerToAdd" (change)="selectPlayer($event)">
+            <option value="">Sélectionner un joueur</option>
+            @for (player of playersAvailableToAdd(); track player.id) {
+              <option [value]="player.id">{{ player.nom }}</option>
+            }
+          </select>
+          <button
+            class="btn"
+            type="button"
+            [disabled]="selectedPlayerId() === null"
+            (click)="addPlayer()"
+          >
+            Ajouter
+          </button>
+        </div>
+        <small>Les nouveaux joueurs sont ajoutés comme remplaçants.</small>
+      </div>
       <div id="players">
-        @for (player of config().joueurs; track player.numero) {
-          <div class="player">
-            <div class="number">{{ player.numero }}</div>
+        @for (player of config().joueurs; track player.nom) {
+          <div
+            class="player"
+            draggable="true"
+            (dragstart)="onPlayerDragStart($event, player.numero)"
+            (dragend)="onPlayerDragEnd()"
+          >
+            <input
+              class="shirt-number"
+              type="number"
+              min="1"
+              [value]="player.numero"
+              [attr.aria-label]="'Numéro de maillot de ' + player.nom"
+              (change)="updatePlayerNumber(player.numero, $event)"
+            />
             <div>
               <div class="player-name">
-                {{ player.nom }}
+                {{ displayPlayerName(player.nom) }}
                 @if (player.capitaine) {
                   <span class="captain-badge">C</span>
                 }
               </div>
             </div>
+            <label class="captain-control">
+              <input
+                type="checkbox"
+                [checked]="player.capitaine"
+                [attr.aria-label]="'Capitaine : ' + player.nom"
+                (change)="setCaptain(player.numero, $event)"
+              />
+              C
+            </label>
+            <button
+              class="remove-player"
+              type="button"
+              [attr.aria-label]="'Retirer ' + player.nom"
+              [title]="'Retirer ' + player.nom"
+              (click)="removePlayer(player.numero)"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
         }
       </div>
     </section>
 
     <section class="panel pitch-wrap">
-      <div class="pitch" id="pitch">
+      <div class="pitch" id="pitch" [class.is-dragging]="draggingPlayerNumero() !== null">
         <div class="line halfway-line"></div>
         <div class="line center-circle"></div>
         <div class="line box-left"></div>
         <div class="line box-right"></div>
         <div class="line goal-left"></div>
         <div class="line goal-right"></div>
-        @for (player of starters(); track player.numero; let index = $index) {
+        @for (poste of pitchPositions; track poste) {
+          <div
+            class="drop-zone"
+            [style.left]="positionMap[poste][0] + '%'"
+            [style.top]="positionMap[poste][1] + '%'"
+            [attr.aria-label]="'Déposer à la position ' + poste"
+            (dragover)="onPitchDragOver($event)"
+            (drop)="onPitchDrop($event, poste)"
+          ></div>
+        }
+        @for (player of starters(); track player.nom; let index = $index) {
           @if (positionFor(player, index); as position) {
-            <div class="spot" [style.left]="position.left" [style.top]="position.top">
+            <div
+              class="spot"
+              draggable="true"
+              [style.left]="position.left"
+              [style.top]="position.top"
+              (dragstart)="onPlayerDragStart($event, player.numero)"
+              (dragend)="onPlayerDragEnd()"
+              (dragover)="onPitchDragOver($event)"
+              (drop)="onPitchDrop($event, player.poste.toUpperCase())"
+            >
               <div class="ball">{{ player.numero }}</div>
-              <div class="label">{{ player.nom }}</div>
+              <div class="label">{{ displayPlayerName(player.nom) }}</div>
             </div>
           }
         }
@@ -68,12 +140,23 @@
 
       <div class="substitutes">
         <h2>Remplaçants</h2>
-        <div class="substitute-list">
-          @for (player of substitutes(); track player.numero) {
-            <div class="substitute">
+        <div
+          class="substitute-list"
+          (dragover)="onPitchDragOver($event)"
+          (drop)="onSubstituteDrop($event)"
+        >
+          @for (player of substitutes(); track player.nom) {
+            <div
+              class="substitute"
+              draggable="true"
+              (dragstart)="onPlayerDragStart($event, player.numero)"
+              (dragend)="onPlayerDragEnd()"
+              (dragover)="onPitchDragOver($event)"
+              (drop)="onSubstituteDrop($event, player.numero)"
+            >
               <div class="number">{{ player.numero }}</div>
               <div>
-                <div class="substitute-name">{{ player.nom }}</div>
+                <div class="substitute-name">{{ displayPlayerName(player.nom) }}</div>
                 <div class="substitute-poste">{{ player.poste }}</div>
               </div>
             </div>

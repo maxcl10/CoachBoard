@@ -129,6 +129,27 @@
         margin: 0 0 4px;
         font-size: 20px;
       }
+
+      .player-editor {
+        display: grid;
+        gap: 7px;
+        margin-bottom: 12px;
+      }
+
+      .player-editor-row {
+        display: flex;
+        gap: 8px;
+      }
+
+      .player-editor select {
+        flex: 1;
+        min-width: 0;
+        padding: 8px;
+      }
+
+      .player-editor small {
+        color: #64748b;
+      }
       .subtitle {
         color: #64748b;
         font-size: 13px;
@@ -158,6 +179,45 @@
       .player-name {
         font-weight: 750;
         font-size: 14px;
+      }
+
+      .shirt-number {
+        width: 38px;
+        border: 1px solid #dbe3ee;
+        border-radius: 6px;
+        padding: 4px;
+        text-align: center;
+      }
+
+      .captain-control {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        color: #64748b;
+        font-size: 12px;
+      }
+
+      .player[draggable='true'] {
+        cursor: grab;
+      }
+
+      .player[draggable='true']:active {
+        cursor: grabbing;
+      }
+
+      .remove-player {
+        margin-left: auto;
+        border: 0;
+        background: transparent;
+        color: #b91c1c;
+        cursor: pointer;
+        font-size: 22px;
+        line-height: 1;
+        padding: 2px 5px;
+      }
+
+      .remove-player:hover {
+        text-decoration: underline;
       }
       .player-poste {
         color: #64748b;
@@ -227,6 +287,11 @@
         border: 1px solid #e2e8f0;
         border-radius: 10px;
         padding: 7px 10px;
+        cursor: grab;
+      }
+
+      .substitute:active {
+        cursor: grabbing;
       }
       .substitute .number {
         width: 28px;
@@ -293,6 +358,36 @@
         flex-direction: column;
         align-items: center;
         z-index: 3;
+        cursor: grab;
+      }
+
+      .spot:active {
+        cursor: grabbing;
+      }
+
+      .drop-zone {
+        position: absolute;
+        width: 86px;
+        height: 64px;
+        transform: translate(-50%, -50%);
+        border: 2px dashed transparent;
+        border-radius: 12px;
+        z-index: 2;
+      }
+
+      .drop-zone:hover {
+        border-color: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      .pitch.is-dragging .drop-zone {
+        border-color: rgba(255, 255, 255, 0.65);
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .pitch.is-dragging .drop-zone:hover {
+        border-color: #ffffff;
+        background: rgba(255, 255, 255, 0.25);
       }
       .ball {
         width: 45px;
@@ -358,6 +453,30 @@
         }
         .toolbar {
           display: none;
+        }
+        .player-editor,
+        .remove-player,
+        .captain-control,
+        .drop-zone {
+          display: none;
+        }
+        .shirt-number {
+          width: 24px;
+          height: 24px;
+          border: 0;
+          border-radius: 50%;
+          padding: 0;
+          background: #2563eb;
+          color: white;
+          font-size: 10px;
+          font-weight: 900;
+          appearance: none;
+          -moz-appearance: textfield;
+        }
+        .shirt-number::-webkit-inner-spin-button,
+        .shirt-number::-webkit-outer-spin-button {
+          margin: 0;
+          appearance: none;
         }
         .page {
           max-width: none;
