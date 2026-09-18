@@ -1,0 +1,16 @@
+@use 'bootstrap/scss/bootstrap';
+
+@page {
+  size: landscape;
+  margin: 8mm;
+}
+
+@media print {
+  html,
+  body {
+    height: 100%;
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

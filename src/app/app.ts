@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { DatePipe, TitleCasePipe, registerLocaleData } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import localeFr from '@angular/common/locales/fr';
@@ -11,8 +11,7 @@ registerLocaleData(localeFr, 'fr-FR');
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
-  styleUrl: './app.css',
-  encapsulation: ViewEncapsulation.None,
+  styleUrl: './app.scss',
   imports: [DatePipe, TitleCasePipe],
 })
 export class App {

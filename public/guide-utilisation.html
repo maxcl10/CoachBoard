@@ -4,107 +4,43 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Guide d'utilisation - Feuille d'avant-match</title>
-    <style>
-      :root {
-        color: #172033;
-        background: #eef2f7;
-        font-family: Inter, Arial, sans-serif;
-        line-height: 1.6;
-      }
-      body {
-        margin: 0;
-      }
-      main {
-        max-width: 900px;
-        margin: 28px auto;
-        padding: 0 20px 40px;
-      }
-      article {
-        background: white;
-        border-radius: 18px;
-        padding: 30px 36px;
-        box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
-      }
-      h1 {
-        margin-top: 0;
-      }
-      h2 {
-        margin-top: 30px;
-        border-bottom: 1px solid #e2e8f0;
-        padding-bottom: 6px;
-      }
-      code {
-        background: #f1f5f9;
-        border-radius: 4px;
-        padding: 2px 5px;
-      }
-      pre {
-        overflow-x: auto;
-        background: #172033;
-        color: #f8fafc;
-        border-radius: 10px;
-        padding: 16px;
-      }
-      pre code {
-        background: transparent;
-        color: inherit;
-        padding: 0;
-      }
-      .back {
-        display: inline-block;
-        margin-bottom: 16px;
-        color: #2563eb;
-        font-weight: 700;
-      }
-      th, td {
-        border-bottom: 1px solid #e2e8f0;
-        padding: 8px 12px;
-        text-align: left;
-        vertical-align: top;
-      }
-      table {
-        border-collapse: collapse;
-        width: 100%;
-      }
-      @media (max-width: 600px) {
-        article {
-          padding: 22px 18px;
-        }
-        table {
-          font-size: 14px;
-        }
-      }
-    </style>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
   </head>
-  <body>
-    <main>
-      <a class="back" href="./">← Retour à la feuille d'avant-match</a>
-      <article>
-        <h1>Guide d'utilisation</h1>
-        <p>
-          L'application <strong>Feuille d'avant-match</strong> permet de préparer
-          une composition d'équipe, de visualiser la formation sur un terrain et
-          d'imprimer la feuille avant le match.
-        </p>
+  <body class="bg-body-secondary">
+    <main class="container py-5" style="max-width: 900px">
+      <a class="d-inline-block mb-3 fw-bold text-decoration-none" href="./">← Retour à la feuille d'avant-match</a>
+      <article class="card shadow-sm rounded-4">
+        <div class="card-body p-4 p-md-5">
+          <h1 class="mb-3">Guide d'utilisation</h1>
+          <p>
+            L'application <strong>Feuille d'avant-match</strong> permet de préparer
+            une composition d'équipe, de visualiser la formation sur un terrain et
+            d'imprimer la feuille avant le match.
+          </p>
 
-        <h2>1. Afficher une composition</h2>
-        <ol>
-          <li>Ouvrez l'application dans votre navigateur.</li>
-          <li>Cliquez sur <strong>Charger la configuration</strong>.</li>
-          <li>Sélectionnez un fichier au format <code>.json</code>.</li>
-          <li>La feuille est actualisée automatiquement avec les informations du fichier.</li>
-        </ol>
-        <p>
-          Une configuration d'exemple est affichée au démarrage. Le chargement
-          d'un fichier ne modifie pas le fichier original sur votre ordinateur.
-        </p>
+          <h2 class="h4 mt-4 pb-2 border-bottom">1. Afficher une composition</h2>
+          <ol>
+            <li>Ouvrez l'application dans votre navigateur.</li>
+            <li>Cliquez sur <strong>Charger la configuration</strong>.</li>
+            <li>Sélectionnez un fichier au format <code>.json</code>.</li>
+            <li>La feuille est actualisée automatiquement avec les informations du fichier.</li>
+          </ol>
+          <p>
+            Une configuration d'exemple est affichée au démarrage. Le chargement
+            d'un fichier ne modifie pas le fichier original sur votre ordinateur.
+          </p>
 
-        <h2>2. Préparer le fichier JSON</h2>
-        <p>
-          Le fichier doit contenir les informations du match et la liste des
-          players. Voici un exemple complet :
-        </p>
-        <pre><code>{
+          <h2 class="h4 mt-4 pb-2 border-bottom">2. Préparer le fichier JSON</h2>
+          <p>
+            Le fichier doit contenir les informations du match et la liste des
+            players. Voici un exemple complet :
+          </p>
+          <pre class="bg-dark text-light rounded-3 p-3 overflow-auto"><code>{
   "team": "EJPS 2 U14",
   "opponent": "Alsasud",
   "venue": "Stade Municipal",
@@ -119,59 +55,65 @@
   ]
 }</code></pre>
 
-        <h2>3. Champs du match</h2>
-        <table>
-          <thead>
-            <tr><th>Champ</th><th>Description</th><th>Exemple</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>team</code></td><td>Nom de votre équipe.</td><td>EJPS 2 U14</td></tr>
-            <tr><td><code>opponent</code></td><td>Nom de l'équipe adverse.</td><td>Alsasud</td></tr>
-            <tr><td><code>venue</code></td><td>Lieu de la rencontre. Champ facultatif.</td><td>Stade Municipal</td></tr>
-            <tr><td><code>home</code></td><td><code>true</code> si votre équipe joue à home, sinon <code>false</code>.</td><td>false</td></tr>
-            <tr><td><code>matchType</code></td><td>Type ou journée du match.</td><td>Championnat J1</td></tr>
-            <tr><td><code>date</code></td><td>Date au format ISO <code>AAAA-MM-JJ</code>.</td><td>2026-09-12</td></tr>
-            <tr><td><code>formation</code></td><td>Nom de la formation affichée.</td><td>4-3-3</td></tr>
-          </tbody>
-        </table>
+          <h2 class="h4 mt-4 pb-2 border-bottom">3. Champs du match</h2>
+          <div class="table-responsive">
+            <table class="table table-striped align-middle">
+              <thead>
+                <tr><th>Champ</th><th>Description</th><th>Exemple</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>team</code></td><td>Nom de votre équipe.</td><td>EJPS 2 U14</td></tr>
+                <tr><td><code>opponent</code></td><td>Nom de l'équipe adverse.</td><td>Alsasud</td></tr>
+                <tr><td><code>venue</code></td><td>Lieu de la rencontre. Champ facultatif.</td><td>Stade Municipal</td></tr>
+                <tr><td><code>home</code></td><td><code>true</code> si votre équipe joue à home, sinon <code>false</code>.</td><td>false</td></tr>
+                <tr><td><code>matchType</code></td><td>Type ou journée du match.</td><td>Championnat J1</td></tr>
+                <tr><td><code>date</code></td><td>Date au format ISO <code>AAAA-MM-JJ</code>.</td><td>2026-09-12</td></tr>
+                <tr><td><code>formation</code></td><td>Nom de la formation affichée.</td><td>4-3-3</td></tr>
+              </tbody>
+            </table>
+          </div>
 
-        <h2>4. Champs d'un joueur</h2>
-        <table>
-          <thead>
-            <tr><th>Champ</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>shirtNumber</code></td><td>Numéro porté par le joueur.</td></tr>
-            <tr><td><code>playerId</code></td><td>Identifiant numérique du joueur dans <code>data/players.json</code>.</td></tr>
-            <tr><td><code>position</code></td><td>Code du position. Les remplaçants utilisent <code>R1</code>, <code>R2</code>, etc.</td></tr>
-            <tr><td><code>captain</code></td><td>Optionnel. Utilisez <code>true</code> pour afficher le badge du captain.</td></tr>
-          </tbody>
-        </table>
-        <p>
-          Les codes de postes reconnus pour le terrain sont notamment
-          <code>GB</code>, <code>DG</code>, <code>DD</code>, <code>DCG</code>,
-          <code>DCD</code>, <code>MDC</code>, <code>MCG</code>, <code>MCD</code>,
-          <code>AG</code>, <code>AD</code> et <code>AC</code>. Un position non
-          reconnu n'est pas placé sur le schéma du terrain, mais reste visible
-          dans la liste des players.
-        </p>
+          <h2 class="h4 mt-4 pb-2 border-bottom">4. Champs d'un joueur</h2>
+          <div class="table-responsive">
+            <table class="table table-striped align-middle">
+              <thead>
+                <tr><th>Champ</th><th>Description</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>shirtNumber</code></td><td>Numéro porté par le joueur.</td></tr>
+                <tr><td><code>playerId</code></td><td>Identifiant numérique du joueur dans <code>data/players.json</code>.</td></tr>
+                <tr><td><code>position</code></td><td>Code du position. Les remplaçants utilisent <code>R1</code>, <code>R2</code>, etc.</td></tr>
+                <tr><td><code>captain</code></td><td>Optionnel. Utilisez <code>true</code> pour afficher le badge du captain.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Les codes de postes reconnus pour le terrain sont notamment
+            <code>GB</code>, <code>DG</code>, <code>DD</code>, <code>DCG</code>,
+            <code>DCD</code>, <code>MDC</code>, <code>MCG</code>, <code>MCD</code>,
+            <code>AG</code>, <code>AD</code> et <code>AC</code>. Un position non
+            reconnu n'est pas placé sur le schéma du terrain, mais reste visible
+            dans la liste des players.
+          </p>
 
-        <h2>5. Imprimer la feuille</h2>
-        <p>
-          Cliquez sur <strong>Imprimer</strong>, choisissez l'imprimante ou
-          l'option d'enregistrement en PDF, puis confirmez. Pour un meilleur
-          résultat, utilisez le format A4 et l'orientation recommandée par
-          votre navigateur.
-        </p>
+          <h2 class="h4 mt-4 pb-2 border-bottom">5. Imprimer la feuille</h2>
+          <p>
+            Cliquez sur <strong>Imprimer</strong>, choisissez l'imprimante ou
+            l'option d'enregistrement en PDF, puis confirmez. Pour un meilleur
+            résultat, utilisez le format A4 et l'orientation recommandée par
+            votre navigateur.
+          </p>
 
-        <h2>6. En cas de problème</h2>
-        <ul>
-          <li><strong>Le fichier ne se charge pas :</strong> vérifiez qu'il s'agit d'un JSON valide et qu'il porte l'extension <code>.json</code>.</li>
-          <li><strong>La date ne s'affiche pas correctement :</strong> utilisez strictement le format <code>AAAA-MM-JJ</code>.</li>
-          <li><strong>Un joueur n'apparaît pas sur le terrain :</strong> vérifiez le code indiqué dans le champ <code>position</code>.</li>
-          <li><strong>Deux players se superposent :</strong> l'application décale automatiquement les players partageant le même position ; vérifiez toutefois que les postes sont corrects.</li>
-        </ul>
+          <h2 class="h4 mt-4 pb-2 border-bottom">6. En cas de problème</h2>
+          <ul>
+            <li><strong>Le fichier ne se charge pas :</strong> vérifiez qu'il s'agit d'un JSON valide et qu'il porte l'extension <code>.json</code>.</li>
+            <li><strong>La date ne s'affiche pas correctement :</strong> utilisez strictement le format <code>AAAA-MM-JJ</code>.</li>
+            <li><strong>Un joueur n'apparaît pas sur le terrain :</strong> vérifiez le code indiqué dans le champ <code>position</code>.</li>
+            <li><strong>Deux players se superposent :</strong> l'application décale automatiquement les players partageant le même position ; vérifiez toutefois que les postes sont corrects.</li>
+          </ul>
+        </div>
       </article>
     </main>
   </body>
 </html>
+

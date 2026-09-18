@@ -1,0 +1,203 @@
+.club-logo {
+  object-fit: contain;
+}
+
+.pitch {
+  width: min(100%, 880px);
+  aspect-ratio: 1.65 / 1;
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: repeating-linear-gradient(
+    90deg,
+    #238044 0,
+    #238044 9.09%,
+    #2a8c4c 9.09%,
+    #2a8c4c 18.18%
+  );
+  border: 5px solid white;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+}
+
+.pitch .line {
+  position: absolute;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+}
+
+.pitch .halfway-line {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+  transform: translateX(-50%);
+}
+
+.pitch .center-circle {
+  width: 20%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  left: 40%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.pitch .box-left {
+  left: -1px;
+  top: 25%;
+  width: 16%;
+  height: 50%;
+}
+
+.pitch .box-right {
+  right: -1px;
+  top: 25%;
+  width: 16%;
+  height: 50%;
+}
+
+.pitch .goal-left {
+  left: -5px;
+  top: 39%;
+  width: 5%;
+  height: 22%;
+  border-left: 0;
+}
+
+.pitch .goal-right {
+  right: -5px;
+  top: 39%;
+  width: 5%;
+  height: 22%;
+  border-right: 0;
+}
+
+.drop-zone {
+  position: absolute;
+  width: 86px;
+  height: 64px;
+  transform: translate(-50%, -50%);
+  border: 2px dashed transparent;
+  border-radius: 12px;
+  z-index: 2;
+}
+
+.drop-zone:hover {
+  border-color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.pitch.is-dragging .drop-zone {
+  border-color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.pitch.is-dragging .drop-zone:hover {
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.spot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+  cursor: grab;
+}
+
+.spot:active {
+  cursor: grabbing;
+}
+
+.ball {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #172033;
+  border: 3px solid white;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 13px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.label {
+  margin-top: 5px;
+  padding: 4px 7px;
+  border-radius: 6px;
+  background: white;
+  color: #172033;
+  font-weight: 800;
+  font-size: 11px;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+}
+
+.number-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 12px;
+  flex: none;
+}
+
+[draggable='true'] {
+  cursor: grab;
+}
+
+[draggable='true']:active {
+  cursor: grabbing;
+}
+
+@media print {
+  .shirt-number-input {
+    width: 24px;
+    height: 24px;
+    border: 0;
+    border-radius: 50%;
+    padding: 0;
+    background: #172033;
+    color: white;
+    font-size: 10px;
+    font-weight: 900;
+    appearance: none;
+    -moz-appearance: textfield;
+  }
+  .shirt-number-input::-webkit-inner-spin-button,
+  .shirt-number-input::-webkit-outer-spin-button {
+    margin: 0;
+    appearance: none;
+  }
+  .pitch {
+    width: 100%;
+    max-height: 100%;
+    flex: 1;
+  }
+  .ball {
+    width: 34px;
+    height: 34px;
+    font-size: 11px;
+    border-width: 2px;
+  }
+  .label {
+    margin-top: 3px;
+    padding: 2px 5px;
+    font-size: 9px;
+  }
+  .match-card,
+  .layout {
+    break-inside: avoid;
+  }
+}
+
