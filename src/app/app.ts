@@ -167,6 +167,21 @@ export class App {
     this.selectedPlayerId.set(value ? Number(value) : null);
   }
 
+  protected createNewConfig(): void {
+    this.config.set({
+      team: '',
+      opponent: '',
+      venue: '',
+      home: false,
+      matchType: '',
+      date: '',
+      formation: '',
+      players: [],
+    });
+    this.selectedPlayerId.set(null);
+    this.draggingPlayerId.set(null);
+  }
+
   protected addPlayer(): void {
     if (!this.canAddPlayer()) return;
     const playerId = this.selectedPlayerId();
