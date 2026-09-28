@@ -24,12 +24,12 @@ export class App {
   protected readonly draggingPlayerId = signal<number | null>(null);
 
   protected readonly config = signal<MatchConfig>({
-    team: 'EJPS 2 U14 (1er)',
-    opponent: 'Saint-Louis Neuweg (2e)',
+    team: 'EJPS 2 U14',
+    opponent: 'Mulhouse Coteaux U15',
     venue: 'Stade de l\'Au',
     home: false,
-    matchType: 'Championnat U14 D1  J2',
-    date: '2026-09-19',
+    matchType: 'Amical',
+    date: '2026-09-27',
     formation: '4-3-3',
     players: [
       { playerId: 28, shirtNumber: 1, position: 'GB' },
@@ -349,5 +349,21 @@ export class App {
   /** Opens the browser print dialog for the match sheet. */
   protected printPage(): void {
     window.print();
+  }
+
+  /** Downloads the currently displayed configuration as a JSON file. */
+  protected downloadConfig(): void {
+    const json = JSON.stringify(this.config(), null, 2);
+    const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const fileName = `${this.config().team || 'configuration'}-${this.config().opponent || 'match'}.json`
+      .replace(/[<>:"/\\|?*\u0000-\u001F]/g, '-')
+      .replace(/\s+/g, '-');
+
+    link.href = url;
+    link.download = fileName;
+    link.click();
+    URL.revokeObjectURL(url);
   }
 }

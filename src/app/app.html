@@ -17,6 +17,9 @@
         Nouvelle configuration
       </button>
       <label class="btn btn-primary mb-0" for="configFile">Charger la configuration</label>
+      <button class="btn btn-outline-light" type="button" (click)="downloadConfig()">
+        💾 Sauvegarder la configuration
+      </button>
       <button class="btn btn-outline-light" type="button" (click)="printPage()">🖨️ Imprimer</button>
       <a class="btn btn-outline-light" href="guide-utilisation.html" target="_blank" rel="noopener">📖 Guide d'utilisation</a>
       <input class="visually-hidden" id="configFile" type="file" accept=".json,application/json" (change)="onConfigFileChange($event)" />
