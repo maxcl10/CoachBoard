@@ -214,7 +214,7 @@ export class App {
     if (!player || this.config().players.some((item) => item.playerId === player.id)) return;
 
     const currentPlayers = this.config().players;
-    const nextNumber = Math.max(0, ...currentPlayers.map((item) => item.shirtNumber)) + 1;
+    const nextNumber = this.nextAvailableShirtNumber(currentPlayers);
     const nextSubstitute = this.nextSubstitutePosition(currentPlayers);
 
     this.config.update((config) => ({
@@ -222,6 +222,14 @@ export class App {
       players: [...config.players, { playerId: player.id, shirtNumber: nextNumber, position: nextSubstitute }],
     }));
     this.selectedPlayerId.set(null);
+  }
+
+  /** Returns the lowest positive shirt number not already in use. */
+  private nextAvailableShirtNumber(players: Player[]): number {
+    const usedNumbers = new Set(players.map((player) => player.shirtNumber));
+    let number = 1;
+    while (usedNumbers.has(number)) number += 1;
+    return number;
   }
 
   protected removePlayer(playerId: number): void {
