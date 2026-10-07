@@ -154,6 +154,11 @@ export class App {
       : `Joueur ${player.playerId}`;
   }
 
+  protected updateTeam(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.config.update((config) => ({ ...config, team: value }));
+  }
+
   protected updateOpponent(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.config.update((config) => ({ ...config, opponent: value }));
@@ -184,14 +189,22 @@ export class App {
       team: '',
       opponent: '',
       venue: '',
-      home: false,
+      home: true,
       matchType: '',
-      date: '',
-      formation: '',
+      date: this.todayAsIsoDate(),
+      formation: '4-3-3',
       players: [],
     });
     this.selectedPlayerId.set(null);
     this.draggingPlayerId.set(null);
+  }
+
+  /** Returns today's date formatted as 'yyyy-MM-dd' for the date input default. */
+  private todayAsIsoDate(): string {
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${today.getFullYear()}-${month}-${day}`;
   }
 
   protected addPlayer(): void {

@@ -31,7 +31,16 @@
       <div class="d-flex align-items-center justify-content-center gap-4 mb-3">
         <div class="fs-3 fw-bold">
           @if (config().home) {
-            <span>{{ config().team }}</span>
+            <label class="visually-hidden" for="teamInput">Équipe</label>
+            <input
+              id="teamInput"
+              class="editable-field fs-3 fw-bold text-center d-print-none"
+              type="text"
+              [value]="config().team"
+              (change)="updateTeam($event)"
+              placeholder="Équipe"
+            />
+            <span class="d-none d-print-inline">{{ config().team || '—' }}</span>
           } @else {
             <label class="visually-hidden" for="opponentInput">Adversaire</label>
             <input
@@ -59,7 +68,16 @@
             />
             <span class="d-none d-print-inline">{{ config().opponent || '—' }}</span>
           } @else {
-            <span>{{ config().team }}</span>
+            <label class="visually-hidden" for="teamInput">Équipe</label>
+            <input
+              id="teamInput"
+              class="editable-field fs-3 fw-bold text-center d-print-none"
+              type="text"
+              [value]="config().team"
+              (change)="updateTeam($event)"
+              placeholder="Équipe"
+            />
+            <span class="d-none d-print-inline">{{ config().team || '—' }}</span>
           }
         </div>
       </div>
