@@ -33,7 +33,9 @@
           @if (config().home) {
             <span>{{ config().team }}</span>
           } @else {
+            <label class="visually-hidden" for="opponentInput">Adversaire</label>
             <input
+              id="opponentInput"
               class="editable-field fs-3 fw-bold text-center d-print-none"
               type="text"
               [value]="config().opponent"
@@ -46,7 +48,9 @@
         <div class="text-secondary fw-bold small">VS</div>
         <div class="fs-3 fw-bold">
           @if (config().home) {
+            <label class="visually-hidden" for="opponentInput">Adversaire</label>
             <input
+              id="opponentInput"
               class="editable-field fs-3 fw-bold text-center d-print-none"
               type="text"
               [value]="config().opponent"
@@ -62,8 +66,9 @@
       <div class="row row-cols-1 row-cols-md-4 g-3 text-start">
         <div class="col">
           <div class="border rounded-3 p-2 bg-body-tertiary h-100">
-            <span class="d-block text-uppercase text-secondary small fw-bold mb-1">Type de match</span>
+            <label class="d-block text-uppercase text-secondary small fw-bold mb-1" for="matchTypeInput">Type de match</label>
             <input
+              id="matchTypeInput"
               class="editable-field fs-6 fw-bold d-print-none"
               type="text"
               [value]="config().matchType"
@@ -75,8 +80,9 @@
         </div>
         <div class="col">
           <div class="border rounded-3 p-2 bg-body-tertiary h-100">
-            <span class="d-block text-uppercase text-secondary small fw-bold mb-1">Date</span>
+            <label class="d-block text-uppercase text-secondary small fw-bold mb-1" for="dateInput">Date</label>
             <input
+              id="dateInput"
               class="editable-field fs-6 fw-bold d-print-none"
               type="date"
               [value]="config().date"
@@ -87,8 +93,9 @@
         </div>
         <div class="col d-print-none">
           <div class="border rounded-3 p-2 bg-body-tertiary h-100">
-            <span class="d-block text-uppercase text-secondary small fw-bold mb-1">Lieu</span>
+            <label class="d-block text-uppercase text-secondary small fw-bold mb-1" for="homeSelect">Lieu</label>
             <select
+              id="homeSelect"
               class="editable-field fs-6 fw-bold d-print-none"
               [value]="config().home ? 'true' : 'false'"
               (change)="updateHome($event)"
