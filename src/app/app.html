@@ -29,21 +29,74 @@
   <section class="match-card card shadow-sm rounded-4 mb-4">
     <div class="card-body text-center">
       <div class="d-flex align-items-center justify-content-center gap-4 mb-3">
-        <div class="fs-3 fw-bold">{{ homeTeam() }}</div>
+        <div class="fs-3 fw-bold">
+          @if (config().home) {
+            <span>{{ config().team }}</span>
+          } @else {
+            <input
+              class="editable-field fs-3 fw-bold text-center d-print-none"
+              type="text"
+              [value]="config().opponent"
+              (change)="updateOpponent($event)"
+              placeholder="Adversaire"
+            />
+            <span class="d-none d-print-inline">{{ config().opponent || '—' }}</span>
+          }
+        </div>
         <div class="text-secondary fw-bold small">VS</div>
-        <div class="fs-3 fw-bold">{{ awayTeam() }}</div>
+        <div class="fs-3 fw-bold">
+          @if (config().home) {
+            <input
+              class="editable-field fs-3 fw-bold text-center d-print-none"
+              type="text"
+              [value]="config().opponent"
+              (change)="updateOpponent($event)"
+              placeholder="Adversaire"
+            />
+            <span class="d-none d-print-inline">{{ config().opponent || '—' }}</span>
+          } @else {
+            <span>{{ config().team }}</span>
+          }
+        </div>
       </div>
-      <div class="row row-cols-1 row-cols-md-3 g-3 text-start">
+      <div class="row row-cols-1 row-cols-md-4 g-3 text-start">
         <div class="col">
           <div class="border rounded-3 p-2 bg-body-tertiary h-100">
             <span class="d-block text-uppercase text-secondary small fw-bold mb-1">Type de match</span>
-            <strong class="fs-6">{{ config().matchType || '—' }}</strong>
+            <input
+              class="editable-field fs-6 fw-bold d-print-none"
+              type="text"
+              [value]="config().matchType"
+              (change)="updateMatchType($event)"
+              placeholder="Type de match"
+            />
+            <strong class="fs-6 d-none d-print-inline">{{ config().matchType || '—' }}</strong>
           </div>
         </div>
         <div class="col">
           <div class="border rounded-3 p-2 bg-body-tertiary h-100">
             <span class="d-block text-uppercase text-secondary small fw-bold mb-1">Date</span>
-            <strong class="fs-6">{{ config().date ? (((config().date! | date:'EEEE':'':'fr-FR' | titlecase) ?? '') + (config().date! | date:' dd MMMM yyyy':'':'fr-FR')) : '—' }}</strong>
+            <input
+              class="editable-field fs-6 fw-bold d-print-none"
+              type="date"
+              [value]="config().date"
+              (change)="updateDate($event)"
+            />
+            <strong class="fs-6 d-none d-print-inline">{{ config().date ? (((config().date! | date:'EEEE':'':'fr-FR' | titlecase) ?? '') + (config().date! | date:' dd MMMM yyyy':'':'fr-FR')) : '—' }}</strong>
+          </div>
+        </div>
+        <div class="col d-print-none">
+          <div class="border rounded-3 p-2 bg-body-tertiary h-100">
+            <span class="d-block text-uppercase text-secondary small fw-bold mb-1">Lieu</span>
+            <select
+              class="editable-field fs-6 fw-bold d-print-none"
+              [value]="config().home ? 'true' : 'false'"
+              (change)="updateHome($event)"
+            >
+              <option value="true">Domicile</option>
+              <option value="false">Extérieur</option>
+            </select>
+            <strong class="fs-6 d-none d-print-inline">{{ config().home ? 'Domicile' : 'Extérieur' }}</strong>
           </div>
         </div>
         <div class="col">

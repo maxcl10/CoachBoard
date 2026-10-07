@@ -25,11 +25,11 @@ export class App {
 
   protected readonly config = signal<MatchConfig>({
     team: 'EJPS 2 U14',
-    opponent: 'Mulhouse Coteaux U15',
+    opponent: 'Village Neuf',
     venue: 'Stade de l\'Au',
     home: false,
-    matchType: 'Amical',
-    date: '2026-09-27',
+    matchType: 'U14 D1 (J3) ',
+    date: '2026-10-07',
     formation: '4-3-3',
     players: [
       { playerId: 28, shirtNumber: 1, position: 'GB' },
@@ -102,14 +102,6 @@ export class App {
       );
   });
 
-  protected readonly homeTeam = computed(() =>
-    this.config().home ? this.config().team : this.config().opponent,
-  );
-
-  protected readonly awayTeam = computed(() =>
-    this.config().home ? this.config().opponent : this.config().team,
-  );
-
   /** Returns the pitch coordinates for a starter, offsetting duplicate positions. */
   protected positionFor(
     player: Player,
@@ -160,6 +152,26 @@ export class App {
     return directoryEntry
       ? `${directoryEntry.firstName} ${directoryEntry.lastName.charAt(0).toUpperCase()}.`
       : `Joueur ${player.playerId}`;
+  }
+
+  protected updateOpponent(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.config.update((config) => ({ ...config, opponent: value }));
+  }
+
+  protected updateMatchType(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.config.update((config) => ({ ...config, matchType: value }));
+  }
+
+  protected updateDate(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.config.update((config) => ({ ...config, date: value }));
+  }
+
+  protected updateHome(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value === 'true';
+    this.config.update((config) => ({ ...config, home: value }));
   }
 
   protected selectPlayer(event: Event): void {

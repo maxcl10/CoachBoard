@@ -2,6 +2,26 @@
   object-fit: contain;
 }
 
+.editable-field {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  color: inherit;
+  font: inherit;
+}
+
+.editable-field:focus {
+  outline: 1px dashed var(--bs-primary);
+  outline-offset: 2px;
+}
+
+.editable-field::placeholder {
+  color: var(--bs-secondary-color);
+}
+
 .pitch-content {
   width: min(100%, 880px);
   display: flex;
