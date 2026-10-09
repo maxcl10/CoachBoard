@@ -5,11 +5,11 @@
   margin: 5mm;
 }
 
-@media print {
-  #nl-badge-frame {
-    display: none !important;
-  }
+#nl-badge-frame {
+  display: none !important;
+}
 
+@media print {
   html,
   body {
     height: 100%;
